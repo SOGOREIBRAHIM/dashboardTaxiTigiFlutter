@@ -38,6 +38,7 @@ dependencies:
   get: ^4.6.6
   firebase_core: ^2.24.0
   pie_chart: ^5.4.0
+  syncfusion_flutter_charts: ^23.2.6
 
 dev_dependencies:
   flutter_test:

@@ -1,5 +1,6 @@
 import 'package:dashboard1/firebase_options.dart';
 import 'package:dashboard1/pages/login.dart';
+import 'package:dashboard1/pages/passagers.dart';
 import 'package:dashboard1/side_bar.dart/side_bar_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -28,7 +29,8 @@ class MyApp extends StatelessWidget {
       ),
       debugShowCheckedModeBanner: false,
       home: Connexion(),
-      // home: SideBarpage(),
+      // home: const SideBarpage(userMap: {},),
+      // home: Passagers(),
     );
   }
 }

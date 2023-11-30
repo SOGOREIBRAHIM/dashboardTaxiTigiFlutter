@@ -80,7 +80,8 @@ class _SideBarpageState extends State<SideBarpage> {
                   ),
                   SizedBox(height: 70,),
                   ListTile(
-                    title: Text("${widget.userMap["nom"]}"),
+                    title: Text("${widget.userMap["nom"]}", style: TextStyle(fontWeight: FontWeight.bold),),
+                    subtitle: Text("${widget.userMap["prenom"]}", style: TextStyle(fontWeight: FontWeight.bold),),
                     leading: Image.asset("assets/icons/profil.png"),
                     
                   ),

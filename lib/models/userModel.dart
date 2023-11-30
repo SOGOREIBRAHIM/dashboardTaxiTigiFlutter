@@ -25,5 +25,10 @@ class UserModel {
     phone = (snap.value as dynamic)["numero"];
   }
 
+  @override
+  String toString() {
+    return 'UserModel(id: $id, nom: $nom, prenom: $prenom, phone: $phone, email: $email)';
+  }
+
 
 }

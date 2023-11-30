@@ -8,6 +8,8 @@ User? currentUser;
 
 UserModel? userModelCurrentInfo;
 
+
+
 // String userDropOffAdress = "";
 
 // DirectionDetailsInfo? tripDirectionDetailsInfo;
