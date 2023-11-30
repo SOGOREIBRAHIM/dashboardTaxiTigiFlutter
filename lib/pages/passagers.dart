@@ -1,5 +1,9 @@
 import 'package:dashboard1/config/configurationCouleur.dart';
+import 'package:dashboard1/global/global.dart';
+import 'package:dashboard1/models/userModel.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_database/firebase_database.dart';
+
 
 class Passagers extends StatefulWidget {
   const Passagers({super.key});
@@ -9,6 +13,50 @@ class Passagers extends StatefulWidget {
 }
 
 class _PassagersState extends State<Passagers> {
+    DatabaseReference userRef = FirebaseDatabase.instance.ref().child("users");
+
+    static Future<void> getAllUsers() async {
+    DatabaseReference usersRef = FirebaseDatabase.instance.ref().child("users");
+
+    final snap = await usersRef.once();
+    if(snap.snapshot.value != null){
+      listUsers = [];
+      Map<dynamic, dynamic> usersMap = snap.snapshot.value as Map<dynamic, dynamic>;
+
+    usersMap.forEach((key, value) {
+    print('ID: $key');
+    UserModel userModel = UserModel(
+      id: key,
+      nom: value["nom"],
+      prenom: value["prenom"],
+      phone: value["numero"],
+      email: value["email"]
+    ); 
+    
+    listUsers.add(userModel);
+    
+  });
+
+  
+
+    }
+    
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getAllUsers().then((value) {
+      setState(() {
+      
+      });
+    });
+    
+  }
+
+  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -50,12 +98,12 @@ class _PassagersState extends State<Passagers> {
                 ), 
                 shrinkWrap: true,
                 // physics: NeverScrollableScrollPhysics(),
-                itemCount: 6,
+                itemCount: listUsers.length,
                 itemBuilder: (context, index){
                   return InkWell(
                     onTap: () {},
                     child: Padding(
-                      padding: const EdgeInsets.all(35.0),
+                      padding: EdgeInsets.all(35.0),
                       child: Container(
                        height: 50,
                        width: 100,
@@ -87,15 +135,15 @@ class _PassagersState extends State<Passagers> {
                               children: [
                                 SizedBox(height: 25,),
                                 Text(
-                                  "Ibrahim SOGORE"
+                                  "${listUsers[index].prenom}"
                                 ),
                                 SizedBox(height: 5,),
                                 Text(
-                                  "+223 83 52 28 56"
+                                  "${listUsers[index].prenom}"
                                 ),
                                 SizedBox(height: 10,),
                                 Text(
-                                  "sogoreibrahim135@gmail.com"
+                                  "${listUsers[index].email}"
                                 ),
                               ],
                             ),
@@ -113,3 +161,7 @@ class _PassagersState extends State<Passagers> {
     );
   }
 }
+
+
+
+

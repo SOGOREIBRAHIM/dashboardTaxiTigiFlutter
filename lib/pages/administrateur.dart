@@ -1,6 +1,10 @@
 import 'package:dashboard1/config/configurationCouleur.dart';
+import 'package:dashboard1/global/global.dart';
+import 'package:dashboard1/models/userModel.dart';
 import 'package:dashboard1/pages/dashboard.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_database/firebase_database.dart';
+
 
 class Administrateur extends StatefulWidget {
   const Administrateur({super.key});
@@ -10,6 +14,56 @@ class Administrateur extends StatefulWidget {
 }
 
 class _AdministrateurState extends State<Administrateur> {
+
+  DatabaseReference userRef = FirebaseDatabase.instance.ref().child("drivers");
+
+  static Future<void> getAllUsers() async {
+    DatabaseReference usersRef = FirebaseDatabase.instance.ref().child("drivers");
+
+    final snap = await usersRef.once();
+    if(snap.snapshot.value != null){
+      
+      print("eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee");
+      print(snap.snapshot.value);
+
+      Map<dynamic, dynamic> usersMap = snap.snapshot.value as Map<dynamic, dynamic>;
+
+
+      List<UserModel> userList = [];
+
+    usersMap.forEach((key, value) {
+    print('ID: $key');
+    UserModel userModel = UserModel(
+      id: key,
+      nom: value["nom"],
+      prenom: value["prenom"],
+      phone: value["numero"],
+      email: value["email"]
+    ); 
+
+    listUsers.add(userModel);
+    print("rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr");
+    print(listUsers);
+    
+  });
+
+  
+
+    }
+    
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getAllUsers().then((value) {
+      setState(() {
+      
+      });
+    });
+    
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -45,36 +99,36 @@ class _AdministrateurState extends State<Administrateur> {
               child: GridView.builder(
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 3,
-                  childAspectRatio: 1.1,
+                  childAspectRatio: 2,
                   crossAxisSpacing: 0,
                   mainAxisSpacing: 0,
                 ), 
                 shrinkWrap: true,
                 // physics: NeverScrollableScrollPhysics(),
-                itemCount: 6,
+                itemCount: listUsers.length,
                 itemBuilder: (context, index){
                   return InkWell(
                     onTap: () {},
                     child: Padding(
-                      padding: const EdgeInsets.all(35.0),
+                      padding: EdgeInsets.all(35.0),
                       child: Container(
-                       height: 10,
+                       height: 50,
                        width: 100,
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(10),
                             color: Colors.white,
-                            boxShadow:  [
+                            boxShadow: const [
                               BoxShadow(
                                 color: Color.fromARGB(255, 187, 187, 187),
                                 spreadRadius: 2,
                                 blurRadius: 1,
                               )
                             ]),
-                        child: Column(
+                        child: Row(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             Padding(
-                              padding:  EdgeInsets.only(left: 1, top: 10),
+                              padding: const EdgeInsets.all(8.0),
                               child: CircleAvatar(
                                                         // backgroundImage: AssetImage("assets/images/1.png"),
                                   radius: 40,
@@ -83,70 +137,20 @@ class _AdministrateurState extends State<Administrateur> {
                                 ),
                             ),
                             Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
-                                SizedBox(height: 35,),
+                                SizedBox(height: 25,),
                                 Text(
-                                  "Ibrahim SOGORE", style: TextStyle(fontWeight: FontWeight.bold),
+                                  "${listUsers[index].prenom}"
+                                ),
+                                SizedBox(height: 5,),
+                                Text(
+                                  "${listUsers[index].prenom}"
                                 ),
                                 SizedBox(height: 10,),
                                 Text(
-                                  "+223 77 65 55 67", style: TextStyle(),
-                                ),
-                                SizedBox(height: 10,),
-                                Text(
-                                  "sogoreibrahim135@gmail.com"
-                                ),
-                                SizedBox(height: 15,),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    
-                                    GestureDetector(
-                                      onTap: (){
-                                        // Navigator.push(context, MaterialPageRoute(builder: (index)=> Dashboard()));
-                                      },
-                                      child: Container(
-                                        height: 40,
-                                        width: 40,
-                                        decoration: BoxDecoration(
-                                        borderRadius:
-                                                  BorderRadius.circular(10),
-                                              color: Colors.blue,
-                                              boxShadow: [
-                                                BoxShadow(
-                                                  color: Color.fromARGB(
-                                                      255, 187, 187, 187),
-                                                  spreadRadius: 0,
-                                                  blurRadius: 1,
-                                                )
-                                              ]),
-                                        child: Icon(Icons.create, color: Colors.white,)),
-                                    ),
-                                    SizedBox(width: 20,),
-                                    GestureDetector(
-                                      onTap: (){
-                                        // Navigator.push(context, MaterialPageRoute(builder: (index)=> Dashboard()));
-                                      },
-                                      child: Container(
-                                        height: 40,
-                                        width: 40,
-                                        decoration: BoxDecoration(
-                                        borderRadius:
-                                                  BorderRadius.circular(10),
-                                              color: Colors.red,
-                                              boxShadow: [
-                                                BoxShadow(
-                                                  color: Color.fromARGB(
-                                                      255, 187, 187, 187),
-                                                  spreadRadius: 0,
-                                                  blurRadius: 1,
-                                                )
-                                              ]),
-                                        child: Icon(Icons.delete, color: Colors.white,)),
-                                    ),
-                                  ],
+                                  "${listUsers[index].email}"
                                 ),
                               ],
                             ),

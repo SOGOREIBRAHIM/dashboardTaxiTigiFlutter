@@ -1,3 +1,4 @@
+import 'package:dashboard1/models/driverModel.dart';
 import 'package:dashboard1/models/userModel.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -7,6 +8,10 @@ final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
 User? currentUser;
 
 UserModel? userModelCurrentInfo;
+
+List<UserModel> listUsers = [];
+
+List<DriverModel> listDriver = [];
 
 
 

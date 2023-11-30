@@ -1,5 +1,11 @@
 import 'package:dashboard1/config/configurationCouleur.dart';
+import 'package:dashboard1/global/global.dart';
+import 'package:dashboard1/models/driverModel.dart';
+import 'package:dashboard1/models/userModel.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_database/firebase_database.dart';
+import 'package:get/get.dart';
+
 
 class Chauffeurs extends StatefulWidget {
   const Chauffeurs({super.key});
@@ -9,6 +15,49 @@ class Chauffeurs extends StatefulWidget {
 }
 
 class _ChauffeursState extends State<Chauffeurs> {
+
+  DatabaseReference driversRef = FirebaseDatabase.instance.ref().child("drivers");
+
+  static Future<void> getAllUsers() async {
+
+    DatabaseReference driversRef = FirebaseDatabase.instance.ref().child("drivers");
+    final snap = await driversRef.once();
+
+    if(snap.snapshot.value != null){
+      Map<dynamic, dynamic> driversMap = snap.snapshot.value as Map<dynamic, dynamic>;
+
+      listDriver = [];
+    driversMap.forEach((key, value) {
+    print('ID: $key');
+    DriverModel driverModel = DriverModel(
+      id: key,
+      nom: value["nom"],
+      prenom: value["prenom"],
+      phone: value["numero"],
+      email: value["email"]
+    ); 
+
+    listDriver.add(driverModel);
+    
+  });
+
+  
+
+  }
+    
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getAllUsers().then((value) {
+      setState(() {
+      
+      });
+    });
+    
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -50,12 +99,12 @@ class _ChauffeursState extends State<Chauffeurs> {
                 ), 
                 shrinkWrap: true,
                 // physics: NeverScrollableScrollPhysics(),
-                itemCount: 6,
+                itemCount: listDriver.length,
                 itemBuilder: (context, index){
                   return InkWell(
                     onTap: () {},
                     child: Padding(
-                      padding: const EdgeInsets.all(35.0),
+                      padding: EdgeInsets.all(35.0),
                       child: Container(
                        height: 50,
                        width: 100,
@@ -85,13 +134,17 @@ class _ChauffeursState extends State<Chauffeurs> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
-                                SizedBox(height: 35,),
+                                SizedBox(height: 25,),
                                 Text(
-                                  "Ibrahim SOGORE"
+                                  "${listDriver[index].nom}"
+                                ),
+                                SizedBox(height: 5,),
+                                Text(
+                                  "${listDriver[index].prenom}"
                                 ),
                                 SizedBox(height: 10,),
                                 Text(
-                                  "sogoreibrahim135@gmail.com"
+                                  "${listDriver[index].email}"
                                 ),
                               ],
                             ),
