@@ -28,8 +28,8 @@ class MyApp extends StatelessWidget {
         fontFamily: "Poppins"
       ),
       debugShowCheckedModeBanner: false,
-      // home: Connexion(),
-      home: const SideBarpage(userMap: {},),
+      home: Connexion(),
+      // home: const SideBarpage(userMap: {},),
       // home: Passagers(),
     );
   }

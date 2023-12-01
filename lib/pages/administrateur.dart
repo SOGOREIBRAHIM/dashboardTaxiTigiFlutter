@@ -1,3 +1,5 @@
+import 'dart:html';
+
 import 'package:dashboard1/config/configurationCouleur.dart';
 import 'package:dashboard1/global/global.dart';
 import 'package:dashboard1/models/adminModel.dart';
@@ -15,6 +17,7 @@ import 'package:intl_phone_field/intl_phone_field.dart';
 
 class Administrateur extends StatefulWidget {
   const Administrateur({super.key});
+  
 
   @override
   State<Administrateur> createState() => _AdministrateurState();
@@ -23,12 +26,12 @@ class Administrateur extends StatefulWidget {
 class _AdministrateurState extends State<Administrateur> {
 
   // methode recuperée
-  DatabaseReference driversRef = FirebaseDatabase.instance.ref().child("admin");
+  DatabaseReference adminRef = FirebaseDatabase.instance.ref().child("admin");
 
   static Future<void> getAllUsers() async {
 
-    DatabaseReference driversRef = FirebaseDatabase.instance.ref().child("admin");
-    final snap = await driversRef.once();
+    DatabaseReference adminRef = FirebaseDatabase.instance.ref().child("admin");
+    final snap = await adminRef.once();
 
     if(snap.snapshot.value != null){
       Map<dynamic, dynamic> adminMap = snap.snapshot.value as Map<dynamic, dynamic>;
@@ -54,10 +57,50 @@ class _AdministrateurState extends State<Administrateur> {
     
   }
 
+static Future<AdminModel?> getAdminById(String adminId) async {
+    DatabaseReference adminRef = FirebaseDatabase.instance.ref().child("admin").child(adminId);
+    final snap = await adminRef.once();
+
+    if (snap.snapshot.value != null) {
+      Map<String, dynamic> adminMap = snap.snapshot.value as Map<String, dynamic>;
+
+      AdminModel admin = AdminModel();
+
+      admin = AdminModel(
+        id: adminId,
+        nom: adminMap["nom"],
+        prenom: adminMap["prenom"],
+        phone: adminMap["numero"],
+        email: adminMap["email"],
+        
+      );
+
+      print("ttttttttttttttttttttttttttttttttttttttttttttttttt");
+      print(admin);
+
+    }
+
+    return null; 
+  }
+
+  static Future<void> updateAdminById(String adminId, Map<String, dynamic> updatedData) async {
+    DatabaseReference adminRef = FirebaseDatabase.instance.ref().child("admin").child(adminId);
+    await adminRef.update(updatedData);
+  }
+
+    
+  
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    String adminId = "";
+    getAdminById(adminId).then((value) {
+      setState(() {
+        
+      });
+    });
     getAllUsers().then((value) {
       setState(() {
       
@@ -110,6 +153,7 @@ class _AdministrateurState extends State<Administrateur> {
   final _formKey = GlobalKey<FormState>();
   bool passToggle = true;
   bool confirmPassToggle = true;
+  
 
   Future showAddAdmin(BuildContext context) async{
 
@@ -377,7 +421,8 @@ class _AdministrateurState extends State<Administrateur> {
 
 
   // modifier popup 
-  Future modifier(BuildContext context) async{
+  Future modifier(BuildContext context,AdminModel adminModel) async{
+    
      // methode popup ajout admin
     return showDialog(context: context, 
     builder: (context){
@@ -421,6 +466,7 @@ class _AdministrateurState extends State<Administrateur> {
                                         return "Nom trop long, Maximuin 30 !";
                                       }
                                     },
+                                    initialValue: adminModel.nom!,
                                     onChanged: (text) => setState(() {
                                       nomControler.text = text;
                                     }),
@@ -451,6 +497,8 @@ class _AdministrateurState extends State<Administrateur> {
                                         return "Prenom trop long, Maximuin 30 !";
                                       }
                                     },
+                                    // pour afficher le donné
+                                    initialValue: adminModel.prenom!,
                                     onChanged: (text) => setState(() {
                                       prenomControler.text = text;
                                     }),
@@ -470,6 +518,7 @@ class _AdministrateurState extends State<Administrateur> {
                                         ),
                                         border: OutlineInputBorder()),
                                     initialCountryCode: 'ML',
+                                    initialValue: adminModel.phone!,
                                     onChanged: (text) => setState(() {
                                       numControler.text = text.completeNumber;
                                     }),
@@ -503,6 +552,7 @@ class _AdministrateurState extends State<Administrateur> {
                                         return "Nom trop long, Maximuin 50 !";
                                       }
                                     },
+                                    initialValue: adminModel.email!,
                                     onChanged: (text) => setState(() {
                                       emailControler.text = text;
                                     }),
@@ -579,7 +629,7 @@ class _AdministrateurState extends State<Administrateur> {
                                       }
                                       return null;
                                     },
-                                    obscureText: confirmPassToggle,
+                                    // obscureText: confirmPassToggle,
                                     controller: confirmerPassControler,
                                     keyboardType: TextInputType.name,
                                     decoration: InputDecoration(
@@ -621,7 +671,7 @@ class _AdministrateurState extends State<Administrateur> {
                                     // Vous pouvez également personnaliser d'autres propriétés ici
                                   ),
                                       child: Text(
-                                        'S\'inscrire',
+                                        'Modifier',
                                         style: TextStyle(
                                           fontSize: 20,
                                           color: Color.fromARGB(255, 255, 255, 255),
@@ -682,7 +732,7 @@ class _AdministrateurState extends State<Administrateur> {
 
             TextButton(
               onPressed: () {
-               driversRef.child(firebaseAuth.currentUser!.uid).update({
+               adminRef.child(firebaseAuth.currentUser!.uid).update({
                 "prenom": prenomControler.text.trim(),
                }).then((value) {
                 prenomControler.clear();
@@ -742,7 +792,7 @@ class _AdministrateurState extends State<Administrateur> {
 
             TextButton(
               onPressed: () {
-               driversRef.child(firebaseAuth.currentUser!.uid).update({
+               adminRef.child(firebaseAuth.currentUser!.uid).update({
                 "nom": nomControler.text.trim(),
                }).then((value) {
                 nomControler.clear();
@@ -795,7 +845,7 @@ class _AdministrateurState extends State<Administrateur> {
 
             TextButton(
               onPressed: () {
-               driversRef.child(firebaseAuth.currentUser!.uid).update({
+               adminRef.child(firebaseAuth.currentUser!.uid).update({
                 "numero": numControler.text.trim(),
                }).then((value) {
                 numControler.clear();
@@ -860,7 +910,7 @@ Future<void> showUserEmailDialogAlert(BuildContext context, String? email) async
 
             TextButton(
               onPressed: () {
-               driversRef.child(firebaseAuth.currentUser!.uid).update({
+               adminRef.child(firebaseAuth.currentUser!.uid).update({
                 "email": emailControler.text.trim(),
                }).then((value) {
                 emailControler.clear();
@@ -1022,7 +1072,7 @@ Future<void> showUserEmailDialogAlert(BuildContext context, String? email) async
                                     
                                     GestureDetector(
                                       onTap: () async {
-                                        await modifier(context);
+                                        await modifier(context,listAdmin[index]);
                                       },
                                       child: Container(
                                         height: 40,

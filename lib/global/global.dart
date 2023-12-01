@@ -1,12 +1,15 @@
 import 'package:dashboard1/models/adminModel.dart';
 import 'package:dashboard1/models/driverModel.dart';
 import 'package:dashboard1/models/userModel.dart';
+import 'package:dashboard1/pages/administrateur.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 
 final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
 
 User? currentUser;
+
+Administrateur? currentAdmin;
 
 UserModel? userModelCurrentInfo;
 
