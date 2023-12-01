@@ -32,7 +32,7 @@ class _PassagersState extends State<Passagers> {
       phone: value["numero"],
       email: value["email"]
     ); 
-    
+
     listUsers.add(userModel);
     
   });
@@ -100,8 +100,7 @@ class _PassagersState extends State<Passagers> {
                 // physics: NeverScrollableScrollPhysics(),
                 itemCount: listUsers.length,
                 itemBuilder: (context, index){
-                  return InkWell(
-                    onTap: () {},
+                  return Container(
                     child: Padding(
                       padding: EdgeInsets.all(35.0),
                       child: Container(

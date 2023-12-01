@@ -26,7 +26,7 @@ class _ConnexionState extends State<Connexion> {
               password: passControler.text.trim());
 
         DatabaseReference userRef =
-              FirebaseDatabase.instance.ref().child("users");
+              FirebaseDatabase.instance.ref().child("admin");
 
         final value = await userRef.child(firebaseAuth.currentUser!.uid).once();
         final snap = value.snapshot;

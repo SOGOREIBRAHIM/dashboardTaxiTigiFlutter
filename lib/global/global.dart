@@ -1,3 +1,4 @@
+import 'package:dashboard1/models/adminModel.dart';
 import 'package:dashboard1/models/driverModel.dart';
 import 'package:dashboard1/models/userModel.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -12,6 +13,8 @@ UserModel? userModelCurrentInfo;
 List<UserModel> listUsers = [];
 
 List<DriverModel> listDriver = [];
+
+List<AdminModel> listAdmin = [];
 
 
 

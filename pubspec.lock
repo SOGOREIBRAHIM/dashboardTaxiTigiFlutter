@@ -58,7 +58,7 @@ packages:
     source: hosted
     version: "1.0.6"
   email_validator:
-    dependency: "direct dev"
+    dependency: "direct main"
     description:
       name: email_validator
       sha256: e9a90f27ab2b915a27d7f9c2a7ddda5dd752d6942616ee83529b686fc086221b
@@ -193,7 +193,7 @@ packages:
     source: sdk
     version: "0.0.0"
   fluttertoast:
-    dependency: "direct dev"
+    dependency: "direct main"
     description:
       name: fluttertoast
       sha256: dfdde255317af381bfc1c486ed968d5a43a2ded9c931e87cbecd88767d6a71c1
@@ -233,7 +233,7 @@ packages:
     source: hosted
     version: "0.18.1"
   intl_phone_field:
-    dependency: "direct dev"
+    dependency: "direct main"
     description:
       name: intl_phone_field
       sha256: "73819d3dfcb68d2c85663606f6842597c3ddf6688ac777f051b17814fe767bbf"
