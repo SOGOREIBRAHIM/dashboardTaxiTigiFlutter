@@ -4,6 +4,7 @@ import 'package:dashboard1/config/configurationCouleur.dart';
 import 'package:dashboard1/global/global.dart';
 import 'package:dashboard1/models/adminModel.dart';
 import 'package:dashboard1/models/driverModel.dart';
+import 'package:dashboard1/models/userModel.dart';
 import 'package:dashboard1/pages/dashboard.dart';
 import 'package:dashboard1/pages/login.dart';
 import 'package:dashboard1/side_bar.dart/side_bar_page.dart';
@@ -25,9 +26,21 @@ class Administrateur extends StatefulWidget {
 
 class _AdministrateurState extends State<Administrateur> {
 
-  // methode recuperée
-  DatabaseReference adminRef = FirebaseDatabase.instance.ref().child("admin");
+  AdminModel adminModel = AdminModel();
 
+// Controlleurs des TextFormField
+  final emailControler = TextEditingController();
+  final passControler = TextEditingController();
+  final confirmerPassControler = TextEditingController();
+  final numControler = TextEditingController();
+  final nomControler = TextEditingController();
+  final prenomControler = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+  bool passToggle = true;
+  bool confirmPassToggle = true;
+
+
+// Recperation de la liste Administrateur
   static Future<void> getAllUsers() async {
 
     DatabaseReference adminRef = FirebaseDatabase.instance.ref().child("admin");
@@ -57,50 +70,53 @@ class _AdministrateurState extends State<Administrateur> {
     
   }
 
-static Future<AdminModel?> getAdminById(String adminId) async {
-    DatabaseReference adminRef = FirebaseDatabase.instance.ref().child("admin").child(adminId);
-    final snap = await adminRef.once();
+// Modifier un administrateur
+  static Future updateAdminId(AdminModel admin) async {
 
-    if (snap.snapshot.value != null) {
-      Map<String, dynamic> adminMap = snap.snapshot.value as Map<String, dynamic>;
+    var id = admin.id;
+    print("ttttttttttttttttttttttttttttttttt");
+    print("admin/$id");
+    DatabaseReference adminbRef = FirebaseDatabase.instance.ref().child("admin");
 
-      AdminModel admin = AdminModel();
+    await adminbRef.child(admin.id!).update({
+    "email" : admin.email,
+    "nom" : admin.nom,
+    "numero" : admin.phone,
+    "prenom" : admin.prenom,
+    }).then((value) {
+      print("End excecution");
+      debugPrint("________________________________");
+    });
 
-      admin = AdminModel(
-        id: adminId,
-        nom: adminMap["nom"],
-        prenom: adminMap["prenom"],
-        phone: adminMap["numero"],
-        email: adminMap["email"],
-        
-      );
+  //  await FirebaseDatabase.instance.ref().child("admin").child(admin.id!).update(
+  //   {
+  //   "nom" : admin.nom,
+  //   "prenom" : admin.prenom,
+  //   "email" : admin.email,
+  //   "numero" : admin.phone,
+  //   }
+  //  );
+  //  print("rrrrrrrrrrrrrrrrrrrrrr");
 
-      print("ttttttttttttttttttttttttttttttttttttttttttttttttt");
-      print(admin);
-
-    }
-
-    return null; 
+  // await Fluttertoast.showToast(msg: "Inscription reussit !");
+  //       Navigator.push(
+  //           context, MaterialPageRoute(builder: (index) => SideBarpage(userMap: {})));
+   
   }
 
-  static Future<void> updateAdminById(String adminId, Map<String, dynamic> updatedData) async {
-    DatabaseReference adminRef = FirebaseDatabase.instance.ref().child("admin").child(adminId);
-    await adminRef.update(updatedData);
-  }
+  // Supprimer un administrateur
+  static Future deleteAdminId(AdminModel admin) async {
 
-    
+
+   await FirebaseDatabase.instance.ref().child("admin").child(admin.id!).remove();
+
+  }
   
-
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    String adminId = "";
-    getAdminById(adminId).then((value) {
-      setState(() {
-        
-      });
-    });
+
     getAllUsers().then((value) {
       setState(() {
       
@@ -109,8 +125,8 @@ static Future<AdminModel?> getAdminById(String adminId) async {
     
   }
 
-// methode Ajoutée
-  Future<void> _submit() async {
+// Ajouter un Administrateur
+  Future<void> addAdmin() async {
     if (_formKey.currentState!.validate()) {
       await firebaseAuth
           .createUserWithEmailAndPassword(
@@ -137,31 +153,21 @@ static Future<AdminModel?> getAdminById(String adminId) async {
             context, MaterialPageRoute(builder: (index) => SideBarpage(userMap: {})));
       }).catchError((errorMessage){
         Fluttertoast.showToast(msg: "Inscription echoué !");
+        print(errorMessage.toString());
       });
     }
     else{
       Fluttertoast.showToast(msg: "Remplisser les champs vides !");
     }
   }
-
-  final emailControler = TextEditingController();
-  final passControler = TextEditingController();
-  final confirmerPassControler = TextEditingController();
-  final numControler = TextEditingController();
-  final nomControler = TextEditingController();
-  final prenomControler = TextEditingController();
-  final _formKey = GlobalKey<FormState>();
-  bool passToggle = true;
-  bool confirmPassToggle = true;
-  
-
+ 
+ // Popup pour ajouter un Admin
   Future showAddAdmin(BuildContext context) async{
 
-    // methode popup ajout admin
     return showDialog(context: context, 
     builder: (context){
       return AlertDialog(
-          title: Text("Ajouter un admin", style: TextStyle(color: MesCouleur().couleurPrincipal,fontSize: 20),),
+          title: Text("Modifier un admin", style: TextStyle(color: MesCouleur().couleurPrincipal,fontSize: 20),),
           content: SingleChildScrollView(
             child: Container(
               width: 400,
@@ -393,7 +399,7 @@ static Future<AdminModel?> getAdminById(String adminId) async {
                                     height: 50,
                                     child: ElevatedButton(
                                       onPressed: () async {
-                                       await _submit();
+                                       await addAdmin();
                                       },
                                       style: ElevatedButton.styleFrom(
                                     backgroundColor: MesCouleur().couleurPrincipal// Définir la couleur du bouton
@@ -419,15 +425,14 @@ static Future<AdminModel?> getAdminById(String adminId) async {
     );
   }
 
-
-  // modifier popup 
-  Future modifier(BuildContext context,AdminModel adminModel) async{
+  // Popup pour modifier un admin
+  Future updateAdmin(BuildContext context,AdminModel adminModel) async{
     
      // methode popup ajout admin
     return showDialog(context: context, 
     builder: (context){
       return AlertDialog(
-          title: Text("Ajouter un admin", style: TextStyle(color: MesCouleur().couleurPrincipal,fontSize: 20),),
+          title: Text("Modifier un admin", style: TextStyle(color: MesCouleur().couleurPrincipal,fontSize: 20),),
           content: SingleChildScrollView(
             child: Container(
               width: 400,
@@ -585,25 +590,26 @@ static Future<AdminModel?> getAdminById(String adminId) async {
                                               color: Color(
                                                   0xFFEDB602)), // Couleur de la bordure lorsqu'elle est désactivée
                                         ),
-                                        labelText: "Mot de passe",
-                                        prefixIcon: Icon(
-                                          Icons.lock_outline,
-                                          color: Color(0xFFEDB602),
-                                        ),
-                                        suffix: InkWell(
-                                          onTap: () {
-                                            setState(() {
-                                              passToggle = !passToggle;
-                                            });
-                                          },
-                                          child: Icon(
-                                            passToggle
-                                                ? Icons.visibility
-                                                : Icons.visibility_off,
-                                            color: Color(0xFFEDB602),
-                                          ),
-                                        ),
-                                        border: OutlineInputBorder()),
+                                    border: OutlineInputBorder()),
+                                    //     labelText: "Mot de passe",
+                                    //     prefixIcon: Icon(
+                                    //       Icons.lock_outline,
+                                    //       color: Color(0xFFEDB602),
+                                    //     ),
+                                    //     suffix: InkWell(
+                                    //       onTap: () {
+                                    //         setState(() {
+                                    //           passToggle = !passToggle;
+                                    //         });
+                                    //       },
+                                    //       child: Icon(
+                                    //         passToggle
+                                    //             ? Icons.visibility
+                                    //             : Icons.visibility_off,
+                                    //         color: Color(0xFFEDB602),
+                                    //       ),
+                                    //     ),
+                                    //     border: OutlineInputBorder()),
                                   ),
                                   SizedBox(
                                     height: 10,
@@ -638,46 +644,75 @@ static Future<AdminModel?> getAdminById(String adminId) async {
                                               color: Color(
                                                   0xFFEDB602)), // Couleur de la bordure lorsqu'elle est désactivée
                                         ),
-                                        labelText: "Confirmer ",
-                                        prefixIcon: Icon(
-                                          Icons.lock_outline,
-                                          color: Color(0xFFEDB602),
-                                        ),
-                                        suffix: InkWell(
-                                          onTap: () {
-                                            setState(() {
-                                              confirmPassToggle = !confirmPassToggle;
-                                            });
-                                          },
-                                          child: Icon(
-                                            passToggle
-                                                ? Icons.visibility
-                                                : Icons.visibility_off,
-                                            color: Color(0xFFEDB602),
-                                          ),
-                                        ),
+                                        // labelText: "Confirmer ",
+                                        // prefixIcon: Icon(
+                                        //   Icons.lock_outline,
+                                        //   color: Color(0xFFEDB602),
+                                        // ),
+                                        // suffix: InkWell(
+                                        //   onTap: () {
+                                        //     setState(() {
+                                        //       confirmPassToggle = !confirmPassToggle;
+                                        //     });
+                                        //   },
+                                        //   child: Icon(
+                                        //     passToggle
+                                        //         ? Icons.visibility
+                                        //         : Icons.visibility_off,
+                                        //     color: Color(0xFFEDB602),
+                                        //   ),
+                                        // ),
                                         border: OutlineInputBorder()),
                                   ),
-                                  Container(
-                                    padding: EdgeInsets.only(top: 10),
-                                    width: 350,
-                                    height: 50,
-                                    child: ElevatedButton(
-                                      onPressed: () async {
-                                       await _submit();
-                                      },
-                                      style: ElevatedButton.styleFrom(
-                                    backgroundColor: MesCouleur().couleurPrincipal// Définir la couleur du bouton
-                                    // Vous pouvez également personnaliser d'autres propriétés ici
-                                  ),
-                                      child: Text(
-                                        'Modifier',
-                                        style: TextStyle(
-                                          fontSize: 20,
-                                          color: Color.fromARGB(255, 255, 255, 255),
+                                  Row(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Container(
+                                        padding: EdgeInsets.only(top: 10),
+                                        width: 150,
+                                        height: 50,
+                                        child: ElevatedButton(
+                                          onPressed: () async {
+                                           Navigator.pop(context);
+                                          },
+                                          style: ElevatedButton.styleFrom(
+                                        backgroundColor: Colors.red// Définir la couleur du bouton
+                                        // Vous pouvez également personnaliser d'autres propriétés ici
+                                      ),
+                                          child: Text(
+                                            'Annuler',
+                                            style: TextStyle(
+                                              fontSize: 20,
+                                              color: Color.fromARGB(255, 255, 255, 255),
+                                            ),
+                                          ),
                                         ),
                                       ),
-                                    ),
+                                      SizedBox(width: 40,),
+                                      Container(
+                                        padding: EdgeInsets.only(top: 10),
+                                        width: 150,
+                                        height: 50,
+                                        child: ElevatedButton(
+                                          onPressed: () async {
+                                           await updateAdminId(adminModel);
+                                           print(adminModel.email);
+                                          },
+                                          style: ElevatedButton.styleFrom(
+                                        backgroundColor: MesCouleur().couleurPrincipal// Définir la couleur du bouton
+                                        // Vous pouvez également personnaliser d'autres propriétés ici
+                                      ),
+                                          child: Text(
+                                            'Modifier',
+                                            style: TextStyle(
+                                              fontSize: 20,
+                                              color: Color.fromARGB(255, 255, 255, 255),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
                                   )
                                 ]),
                           ),
@@ -691,247 +726,65 @@ static Future<AdminModel?> getAdminById(String adminId) async {
   
   }
 
+  // methode popup Confirmation de suppression
+  Future showDeleteConfirme(BuildContext context, AdminModel adminModel) async{
 
-  // Modification 
+    return showDialog(
+      context: context, 
+      builder: (context){
+        return AlertDialog(
+          title: Text("Voulez-vous supprimer"),
+          actions: [
+            TextButton(onPressed: () {
+              Navigator.pop(context);
+            }, 
+            child: Text(
+              "Annuler",
+              style: TextStyle(
+                color: Colors.red,
+                fontWeight: FontWeight.bold
+              ),
+            )),
+
+            TextButton(
+              onPressed: () async{
+                if (adminModel!=null) {
+                  Fluttertoast.showToast(msg: " Suppression reussit");
+                  await deleteAdminId(adminModel).then((value) {
+                    Navigator.pop(context);
+                  setState(() {
+                    
+                  });
+                  });
+                  
+                } 
+               else{
+                Fluttertoast.showToast(msg: " Suppression echoue");
+               }
+              //  userRef.child(firebaseAuth.currentUser!.uid).update({
+                
+              //  }).then((value) {
+              //   numeroController.clear();
+              //   Fluttertoast.showToast(msg:" modifié avec succè");
+              //  }).catchError((errorMessage){
+              //   Fluttertoast.showToast(msg: " modification echoue");
+              //  });
+              //  Navigator.pop(context);
+            }, 
+            child: Text(
+              "Supprimer",
+              style: TextStyle(
+                color: Colors.blue,
+                fontWeight: FontWeight.bold
+              ),
+            )),
+          ],
+        );
+      }
+      );
+  }
+
   
-  Future<void> showUserPrenomDialogAlert(BuildContext context, String prenom) async{
-
-    prenomControler.text = prenom;
-    // print("zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz");
-    // print(prenomController.text);
-    // print("zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz");
-    // print("zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz");
-    // print("zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz");
-    // print(prenom);
-
-    return showDialog(
-      context: context, 
-      builder: (context){
-        return AlertDialog(
-          title: Text("Modifier"),
-          content: SingleChildScrollView(
-            child: Column(
-              children: [
-                TextFormField(
-                  controller: prenomControler,
-                  
-                )
-              ],
-            ),
-          ),
-          actions: [
-            TextButton(onPressed: () {
-              Navigator.pop(context);
-            }, 
-            child: Text(
-              "Annuler",
-              style: TextStyle(
-                color: Colors.red,
-              ),
-            )),
-
-            TextButton(
-              onPressed: () {
-               adminRef.child(firebaseAuth.currentUser!.uid).update({
-                "prenom": prenomControler.text.trim(),
-               }).then((value) {
-                prenomControler.clear();
-                Fluttertoast.showToast(msg: prenomControler.text+" modifié avec succè");
-               }).catchError((errorMessage){
-                Fluttertoast.showToast(msg: prenomControler.text+" modification echoue");
-               });
-               Navigator.pop(context);
-            }, 
-            child: Text(
-              "Enregister",
-              style: TextStyle(
-                color: Colors.black,
-              ),
-            )),
-          ],
-        );
-      }
-      );
-  }
-
- Future<void> showUserNomDialogAlert(BuildContext context, String nom) async{
-
-    nomControler.text = nom;
-    // print("zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz");
-    // print(prenomController.text);
-    // print("zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz");
-    // print("zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz");
-    // print("zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz");
-    // print(prenom);
-
-    return showDialog(
-      context: context, 
-      builder: (context){
-        return AlertDialog(
-          title: Text("Modifier"),
-          content: SingleChildScrollView(
-            child: Column(
-              children: [
-                TextFormField(
-                  controller: nomControler,
-                  
-                )
-              ],
-            ),
-          ),
-          actions: [
-            TextButton(onPressed: () {
-              Navigator.pop(context);
-            }, 
-            child: Text(
-              "Annuler",
-              style: TextStyle(
-                color: Colors.red,
-              ),
-            )),
-
-            TextButton(
-              onPressed: () {
-               adminRef.child(firebaseAuth.currentUser!.uid).update({
-                "nom": nomControler.text.trim(),
-               }).then((value) {
-                nomControler.clear();
-                Fluttertoast.showToast(msg:" modifié avec succè");
-               }).catchError((errorMessage){
-                Fluttertoast.showToast(msg: " modification echoue");
-               });
-               Navigator.pop(context);
-            }, 
-            child: Text(
-              "Enregister",
-              style: TextStyle(
-                color: Colors.black,
-              ),
-            )),
-          ],
-        );
-      }
-      );
-  }
-
- Future<void> showUserNumeroDialogAlert(BuildContext context, String numero) async{
-
-    numControler.text = numero;
-    return showDialog(
-      context: context, 
-      builder: (context){
-        return AlertDialog(
-          title: Text("Modifier"),
-          content: SingleChildScrollView(
-            child: Column(
-              children: [
-                TextFormField(
-                  controller: numControler,
-                  
-                )
-              ],
-            ),
-          ),
-          actions: [
-            TextButton(onPressed: () {
-              Navigator.pop(context);
-            }, 
-            child: Text(
-              "Annuler",
-              style: TextStyle(
-                color: Colors.red,
-              ),
-            )),
-
-            TextButton(
-              onPressed: () {
-               adminRef.child(firebaseAuth.currentUser!.uid).update({
-                "numero": numControler.text.trim(),
-               }).then((value) {
-                numControler.clear();
-                Fluttertoast.showToast(msg:" modifié avec succè");
-               }).catchError((errorMessage){
-                Fluttertoast.showToast(msg: " modification echoue");
-               });
-               Navigator.pop(context);
-            }, 
-            child: Text(
-              "Enregister",
-              style: TextStyle(
-                color: Colors.black,
-              ),
-            )),
-          ],
-        );
-      }
-      );
-  }
-
-Future<void> showUserEmailDialogAlert(BuildContext context, String? email) async{
-
-    if (email == null) {
-      print(email);
-    }
-    emailControler.text = email!;
-    
-    // emailSubString = userModelCurrentInfo!.email!.substring(10, 90)+"...";
-    // print("zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz");
-    // print(prenomController.text);
-    // print("zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz");
-    // print("zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz");
-    // print("zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz");
-    // print(prenom);
-
-    return showDialog(
-      context: context, 
-      builder: (context){
-        return AlertDialog(
-          title: Text("Modifier"),
-          content: SingleChildScrollView(
-            child: Column(
-              children: [
-                TextFormField(
-                  controller: emailControler,
-                  
-                )
-              ],
-            ),
-          ),
-          actions: [
-            TextButton(onPressed: () {
-              Navigator.pop(context);
-            }, 
-            child: Text(
-              "Annuler",
-              style: TextStyle(
-                color: Colors.red,
-              ),
-            )),
-
-            TextButton(
-              onPressed: () {
-               adminRef.child(firebaseAuth.currentUser!.uid).update({
-                "email": emailControler.text.trim(),
-               }).then((value) {
-                emailControler.clear();
-                Fluttertoast.showToast(msg:" modifié avec succè");
-               }).catchError((errorMessage){
-                Fluttertoast.showToast(msg: " modification echoue");
-               });
-               Navigator.pop(context);
-            }, 
-            child: Text(
-              "Enregister",
-              style: TextStyle(
-                color: Colors.black,
-              ),
-            )),
-          ],
-        );
-      }
-      );
-  }
-
 
 
   @override
@@ -1042,7 +895,7 @@ Future<void> showUserEmailDialogAlert(BuildContext context, String? email) async
                                                         // backgroundImage: AssetImage("assets/images/1.png"),
                                   radius: 40,
                                   backgroundColor: MesCouleur().couleurPrincipal,
-                                  child: Icon(Icons.person,size: 50,)
+                                  child: Text("${listAdmin[index].nom![0].toUpperCase()}", style: TextStyle(fontSize: 30,fontWeight: FontWeight.bold),)
                                 ),
                             ),
                             Column(
@@ -1072,14 +925,14 @@ Future<void> showUserEmailDialogAlert(BuildContext context, String? email) async
                                     
                                     GestureDetector(
                                       onTap: () async {
-                                        await modifier(context,listAdmin[index]);
+                                        await updateAdmin(context,listAdmin[index]);
                                       },
                                       child: Container(
                                         height: 40,
                                         width: 40,
                                         decoration: BoxDecoration(
                                         borderRadius:
-                                                  BorderRadius.circular(10),
+                                                  BorderRadius.circular(5),
                                               color: Colors.blue,
                                               boxShadow: [
                                                 BoxShadow(
@@ -1093,15 +946,15 @@ Future<void> showUserEmailDialogAlert(BuildContext context, String? email) async
                                     ),
                                     SizedBox(width: 20,),
                                     GestureDetector(
-                                      onTap: (){
-                                        // Navigator.push(context, MaterialPageRoute(builder: (index)=> Dashboard()));
+                                      onTap: () async {
+                                         await showDeleteConfirme(context, listAdmin[index]);
                                       },
                                       child: Container(
                                         height: 40,
                                         width: 40,
                                         decoration: BoxDecoration(
                                         borderRadius:
-                                                  BorderRadius.circular(10),
+                                                  BorderRadius.circular(5),
                                               color: Colors.red,
                                               boxShadow: [
                                                 BoxShadow(

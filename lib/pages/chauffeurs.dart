@@ -92,8 +92,8 @@ class _ChauffeursState extends State<Chauffeurs> {
               
               child: GridView.builder(
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 3,
-                  childAspectRatio: 2,
+                  crossAxisCount: 2,
+                  childAspectRatio: 2.6,
                   crossAxisSpacing: 0,
                   mainAxisSpacing: 0,
                 ), 
@@ -103,10 +103,10 @@ class _ChauffeursState extends State<Chauffeurs> {
                 itemBuilder: (context, index){
                   return Container(
                     child: Padding(
-                      padding: EdgeInsets.all(35.0),
+                      padding: EdgeInsets.all(30.0),
                       child: Container(
                        height: 50,
-                       width: 100,
+                       width: 60,
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(10),
                             color: Colors.white,
@@ -121,12 +121,12 @@ class _ChauffeursState extends State<Chauffeurs> {
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             Padding(
-                              padding: const EdgeInsets.all(8.0),
+                              padding: const EdgeInsets.all(50.0),
                               child: CircleAvatar(
                                                         // backgroundImage: AssetImage("assets/images/1.png"),
                                   radius: 40,
                                   backgroundColor: MesCouleur().couleurPrincipal,
-                                  child: Icon(Icons.person,size: 50,)
+                                  child: Text("${listDriver[index].nom![0].toUpperCase()}", style: TextStyle(fontSize: 30,fontWeight: FontWeight.bold),)
                                 ),
                             ),
                             Column(
@@ -134,16 +134,44 @@ class _ChauffeursState extends State<Chauffeurs> {
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
                                 SizedBox(height: 25,),
-                                Text(
-                                  "${listDriver[index].nom}"
+                                Row(
+                                  children: [
+                                    Icon(Icons.person, color: MesCouleur().couleurPrincipal,),
+                                    SizedBox(width: 30,),
+                                    Text(
+                                      "${listDriver[index].nom}"
+                                    ),
+                                  ],
                                 ),
                                 SizedBox(height: 5,),
-                                Text(
-                                  "${listDriver[index].prenom}"
+                                Row(
+                                  children: [
+                                    Icon(Icons.person, color: MesCouleur().couleurPrincipal,),
+                                    SizedBox(width: 30,),
+                                    Text(
+                                      "${listDriver[index].prenom}"
+                                    ),
+                                  ],
                                 ),
-                                SizedBox(height: 10,),
-                                Text(
-                                  "${listDriver[index].email}"
+                                SizedBox(height: 5,),
+                                Row(
+                                  children: [
+                                    Icon(Icons.phone_android, color: MesCouleur().couleurPrincipal,),
+                                    SizedBox(width: 30,),
+                                    Text(
+                                      "${listDriver[index].phone}"
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(height: 5,),
+                                Row(
+                                  children: [
+                                    Icon(Icons.email, color: MesCouleur().couleurPrincipal,),
+                                    SizedBox(width: 30,),
+                                    Text(
+                                      "${listDriver[index].email}"
+                                    ),
+                                  ],
                                 ),
                               ],
                             ),
