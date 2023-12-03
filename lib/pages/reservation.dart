@@ -1,5 +1,8 @@
 import 'package:dashboard1/config/configurationCouleur.dart';
+import 'package:dashboard1/models/reservation.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_database/firebase_database.dart';
+
 
 class Reservation extends StatefulWidget {
   const Reservation({super.key});
@@ -9,6 +12,53 @@ class Reservation extends StatefulWidget {
 }
 
 class _ReservationState extends State<Reservation> {
+
+  // Recperation de la liste Administrateur
+  static Future<void> getAllReservation() async {
+
+    DatabaseReference reservationRef = FirebaseDatabase.instance.ref().child("All Ride Request");
+    final snap = await reservationRef.once();
+
+    if(snap.snapshot.value != null){
+      Map<dynamic, dynamic> reservationMap = snap.snapshot.value as Map<dynamic, dynamic>;
+
+    List listReservation = [];
+
+    reservationMap.forEach((key, value) {
+    print('ID: $key');
+    ReservationModel reservationModel = ReservationModel(
+      destination: value["destinationAdress"],
+      originAdress: value["originAdress"],
+      phone: value["userphone"],
+      name: value["name"]
+    ); 
+
+    listReservation.add(reservationModel);
+    print("List rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr");
+    print(listReservation);
+    
+  });
+
+  
+
+  }
+    
+  }
+
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getAllReservation().then((value) {
+      setState(() {
+        
+      });
+    });
+  }
+
+
+
   @override
   Widget build(BuildContext context) {
      return Scaffold(

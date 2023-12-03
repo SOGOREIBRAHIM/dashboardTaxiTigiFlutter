@@ -13,6 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 
 
@@ -78,14 +79,16 @@ class _AdministrateurState extends State<Administrateur> {
     print("admin/$id");
     DatabaseReference adminbRef = FirebaseDatabase.instance.ref().child("admin");
 
-    await adminbRef.child(admin.id!).update({
+    await adminbRef.child(admin.id!).set({
     "email" : admin.email,
     "nom" : admin.nom,
     "numero" : admin.phone,
     "prenom" : admin.prenom,
     }).then((value) {
       print("End excecution");
-      debugPrint("________________________________");
+      debugPrint("---------------------------------------------");
+    }).catchError((onError){
+      print(onError.toString());
     });
 
   //  await FirebaseDatabase.instance.ref().child("admin").child(admin.id!).update(
@@ -426,11 +429,15 @@ class _AdministrateurState extends State<Administrateur> {
   }
 
   // Popup pour modifier un admin
-  Future updateAdmin(BuildContext context,AdminModel adminModel) async{
+  Future updateAdmin(BuildContext context, AdminModel adminModel) async{
     
      // methode popup ajout admin
     return showDialog(context: context, 
     builder: (context){
+      nomControler.text = adminModel.nom!;
+      prenomControler.text = adminModel.prenom!;
+      emailControler.text = adminModel.email!;
+      numControler.text = adminModel.phone!;
       return AlertDialog(
           title: Text("Modifier un admin", style: TextStyle(color: MesCouleur().couleurPrincipal,fontSize: 20),),
           content: SingleChildScrollView(
@@ -447,6 +454,7 @@ class _AdministrateurState extends State<Administrateur> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   TextFormField(
+                                    controller: nomControler,
                                     keyboardType: TextInputType.name,
                                     decoration: const InputDecoration(
                                         focusedBorder: OutlineInputBorder(
@@ -471,13 +479,12 @@ class _AdministrateurState extends State<Administrateur> {
                                         return "Nom trop long, Maximuin 30 !";
                                       }
                                     },
-                                    initialValue: adminModel.nom!,
-                                    onChanged: (text) => setState(() {
-                                      nomControler.text = text;
-                                    }),
+                                    // initialValue: adminModel.nom!,
+                                    
                                   ),
                                   SizedBox(height: 10),
                                   TextFormField(
+                                    controller: prenomControler,
                                     keyboardType: TextInputType.name,
                                     decoration: const InputDecoration(
                                         focusedBorder: OutlineInputBorder(
@@ -503,13 +510,11 @@ class _AdministrateurState extends State<Administrateur> {
                                       }
                                     },
                                     // pour afficher le donné
-                                    initialValue: adminModel.prenom!,
-                                    onChanged: (text) => setState(() {
-                                      prenomControler.text = text;
-                                    }),
+                                    // initialValue: adminModel.prenom!,
                                   ),
                                   SizedBox(height: 10),
                                   IntlPhoneField(
+                                    controller: numControler,
                                     showCountryFlag: true,
                                     dropdownIcon: Icon(
                                       Icons.arrow_drop_down,
@@ -524,12 +529,10 @@ class _AdministrateurState extends State<Administrateur> {
                                         border: OutlineInputBorder()),
                                     initialCountryCode: 'ML',
                                     initialValue: adminModel.phone!,
-                                    onChanged: (text) => setState(() {
-                                      numControler.text = text.completeNumber;
-                                    }),
                                   ),
                                   SizedBox(height: 5),
                                   TextFormField(
+                                    controller: emailControler,
                                     keyboardType: TextInputType.name,
                                     decoration: const InputDecoration(
                                         focusedBorder: OutlineInputBorder(
@@ -557,113 +560,14 @@ class _AdministrateurState extends State<Administrateur> {
                                         return "Nom trop long, Maximuin 50 !";
                                       }
                                     },
-                                    initialValue: adminModel.email!,
-                                    onChanged: (text) => setState(() {
-                                      emailControler.text = text;
-                                    }),
+                                    // initialValue: adminModel.email!,
                                   ),
                                   SizedBox(height: 10),
-                                  TextFormField(
-                                    inputFormatters: [
-                                      LengthLimitingTextInputFormatter(20)
-                                    ],
-                                    autovalidateMode:
-                                        AutovalidateMode.onUserInteraction,
-                                    validator: (text) {
-                                      if (text == null || text.isEmpty) {
-                                        return "Mot de passe ne peut pas etre vide !";
-                                      }
-                                      if (text.length < 5) {
-                                        return "Entrez mot de passe valide !";
-                                      }
-                                      if (text.length > 19) {
-                                        return "Mot de passe trop long, Maximuin 19 !";
-                                      }
-                                      return null;
-                                    },
-                                    obscureText: passToggle,
-                                    controller: passControler,
-                                    keyboardType: TextInputType.name,
-                                    decoration: InputDecoration(
-                                        focusedBorder: OutlineInputBorder(
-                                          borderSide: BorderSide(
-                                              color: Color(
-                                                  0xFFEDB602)), // Couleur de la bordure lorsqu'elle est désactivée
-                                        ),
-                                    border: OutlineInputBorder()),
-                                    //     labelText: "Mot de passe",
-                                    //     prefixIcon: Icon(
-                                    //       Icons.lock_outline,
-                                    //       color: Color(0xFFEDB602),
-                                    //     ),
-                                    //     suffix: InkWell(
-                                    //       onTap: () {
-                                    //         setState(() {
-                                    //           passToggle = !passToggle;
-                                    //         });
-                                    //       },
-                                    //       child: Icon(
-                                    //         passToggle
-                                    //             ? Icons.visibility
-                                    //             : Icons.visibility_off,
-                                    //         color: Color(0xFFEDB602),
-                                    //       ),
-                                    //     ),
-                                    //     border: OutlineInputBorder()),
-                                  ),
+                                 
                                   SizedBox(
                                     height: 10,
                                   ),
-                                  TextFormField(
-                                    inputFormatters: [
-                                      LengthLimitingTextInputFormatter(20)
-                                    ],
-                                    autovalidateMode:
-                                        AutovalidateMode.onUserInteraction,
-                                    validator: (text) {
-                                      if (text == null || text.isEmpty) {
-                                        return "Confirmer mot de passe ne peut pas etre vide !";
-                                      }
-                                      if (text.length < 5) {
-                                        return "Entrez mot de passe valide !";
-                                      }
-                                      if (text != passControler.text) {
-                                        return "Mot de passe incorrect !";
-                                      }
-                                      if (text.length > 19) {
-                                        return "Confirmer Mot de passe trop long, Maximuin 19 !";
-                                      }
-                                      return null;
-                                    },
-                                    // obscureText: confirmPassToggle,
-                                    controller: confirmerPassControler,
-                                    keyboardType: TextInputType.name,
-                                    decoration: InputDecoration(
-                                        focusedBorder: OutlineInputBorder(
-                                          borderSide: BorderSide(
-                                              color: Color(
-                                                  0xFFEDB602)), // Couleur de la bordure lorsqu'elle est désactivée
-                                        ),
-                                        // labelText: "Confirmer ",
-                                        // prefixIcon: Icon(
-                                        //   Icons.lock_outline,
-                                        //   color: Color(0xFFEDB602),
-                                        // ),
-                                        // suffix: InkWell(
-                                        //   onTap: () {
-                                        //     setState(() {
-                                        //       confirmPassToggle = !confirmPassToggle;
-                                        //     });
-                                        //   },
-                                        //   child: Icon(
-                                        //     passToggle
-                                        //         ? Icons.visibility
-                                        //         : Icons.visibility_off,
-                                        //     color: Color(0xFFEDB602),
-                                        //   ),
-                                        // ),
-                                        border: OutlineInputBorder()),
-                                  ),
+                                 
                                   Row(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     mainAxisAlignment: MainAxisAlignment.center,
@@ -696,8 +600,15 @@ class _AdministrateurState extends State<Administrateur> {
                                         height: 50,
                                         child: ElevatedButton(
                                           onPressed: () async {
+                                            adminModel.nom = nomControler.text;
+                                            adminModel.prenom = prenomControler.text;
+                                            adminModel.email = emailControler.text;
+                                            adminModel.phone = numControler.text;
                                            await updateAdminId(adminModel);
-                                           print(adminModel.email);
+                                           setState(() {
+                                             Navigator.pop(context);
+                                             Fluttertoast.showToast(msg: "Administrateur modifier");
+                                           });
                                           },
                                           style: ElevatedButton.styleFrom(
                                         backgroundColor: MesCouleur().couleurPrincipal// Définir la couleur du bouton
@@ -748,19 +659,26 @@ class _AdministrateurState extends State<Administrateur> {
 
             TextButton(
               onPressed: () async{
-                if (adminModel!=null) {
+                await deleteAdminId(adminModel).then((value){
                   Fluttertoast.showToast(msg: " Suppression reussit");
-                  await deleteAdminId(adminModel).then((value) {
-                    Navigator.pop(context);
                   setState(() {
+                     Navigator.push(context, MaterialPageRoute(builder: (c)=> SideBarpage(userMap: {}))); 
+                   });
+                });
+                
+              //   if (adminModel!=null) {
+              //     Fluttertoast.showToast(msg: " Suppression reussit");
+              //     await deleteAdminId(adminModel).then((value) {
+              //       Navigator.pop(context);
+              //     setState(() {
                     
-                  });
-                  });
+              //     });
+              //     });
                   
-                } 
-               else{
-                Fluttertoast.showToast(msg: " Suppression echoue");
-               }
+              //   } 
+              //  else{
+              //   Fluttertoast.showToast(msg: " Suppression echoue");
+              //  }
               //  userRef.child(firebaseAuth.currentUser!.uid).update({
                 
               //  }).then((value) {
@@ -794,189 +712,380 @@ class _AdministrateurState extends State<Administrateur> {
         child: Column(
           children: [
             Padding(
-              padding: const EdgeInsets.only(left: 40,top: 50),
+              padding: const EdgeInsets.all(50),
               child: Container(
                 // width: 1200,
                 // height: 80,
                  child: Padding(
-                   padding:  EdgeInsets.all(10.0),
+                   padding:  EdgeInsets.all(0.0),
                    child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                      children: [
-                       Row(
+                      
+                      SizedBox(height: 60,),
+                       Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                          children: [
-                           Text(
-                            "Liste des Administrateurs",
-                            style: TextStyle(fontSize: 20),
+                           Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                             children: [
+                               Text(
+                                "Liste des reservations",
+                                style: TextStyle(
+                                    fontSize: 25,
+                                    fontWeight: FontWeight.bold,
+                                    color: MesCouleur().couleurPrincipal),
+                              ),
+                              SizedBox(
+                                width: 20,
+                              ),
+                              GestureDetector(
+                                onTap: () async {
+                                  await showAddAdmin(context);
+                                },
+                                child: Container(
+                                    height: 30,
+                                    width: 130,
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(1),
+                                        color: Colors.green,
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color:
+                                                Color.fromARGB(255, 187, 187, 187),
+                                            spreadRadius: 0,
+                                            blurRadius: 1,
+                                          )
+                                        ]),
+                                    child: Row(
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Icon(
+                                          Icons.add_circle,
+                                          color: Colors.white,
+                                        ),
+                                        SizedBox(width: 10,),
+                                        Text("AJOUTER", style: TextStyle(color: Colors.white,fontSize: 15))
+                                      ],
+                                    )),
+                              ),
+                            ],
                           ),
-                          SizedBox(
-                            width: 20,
-                          ),
-                          GestureDetector(
-                            onTap: () async {
-                              await showAddAdmin(context);
-                            },
-                            child: Container(
-                                height: 30,
-                                width: 150,
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(5),
-                                    color: Colors.green,
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color:
-                                            Color.fromARGB(255, 187, 187, 187),
-                                        spreadRadius: 0,
-                                        blurRadius: 1,
-                                      )
-                                    ]),
-                                child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Icon(
-                                      Icons.add,
-                                      color: Colors.white,
-                                    ),
-                                    SizedBox(width: 10,),
-                                    Text("AJOUTER", style: TextStyle(color: Colors.white,fontSize: 15))
-                                  ],
-                                )),
-                          ),
+                          SizedBox(height: 10,),
+                          Container(
+                      width: 1100,
+                      child: Divider(height: 1, thickness: 1, color: MesCouleur().couleurPrincipal)),
                         ],
-                      ),
-                      SizedBox(height: 10,),
-                      Divider(height: 1, thickness: 1, color: Color.fromARGB(255, 196, 194, 194)),
-                    ],
+                       ),
+                     ],
                    ),
                    
                  ),
               ),
             ),
             
-            Container(
-              
-              child: GridView.builder(
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 3,
-                  childAspectRatio: 1.1,
-                  crossAxisSpacing: 0,
-                  mainAxisSpacing: 0,
-                ), 
-                shrinkWrap: true,
-                // physics: NeverScrollableScrollPhysics(),
-                itemCount: listAdmin.length,
-                itemBuilder: (context, index){
-                  return Container(
-                    child: Padding(
-                      padding: const EdgeInsets.all(35.0),
-                      child: Container(
-                       height: 10,
-                       width: 100,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            color: Colors.white,
-                            boxShadow:  [
-                              BoxShadow(
-                                color: Color.fromARGB(255, 187, 187, 187),
-                                spreadRadius: 2,
-                                blurRadius: 1,
-                              )
-                            ]),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Padding(
-                              padding:  EdgeInsets.only(left: 1, top: 10),
-                              child: CircleAvatar(
-                                                        // backgroundImage: AssetImage("assets/images/1.png"),
-                                  radius: 40,
-                                  backgroundColor: MesCouleur().couleurPrincipal,
-                                  child: Text("${listAdmin[index].nom![0].toUpperCase()}", style: TextStyle(fontSize: 30,fontWeight: FontWeight.bold),)
-                                ),
+            Padding(
+              padding: const EdgeInsets.only(right: 60),
+              child: Container(
+                
+                child: GridView.builder(
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 3,
+                    childAspectRatio: 1.1,
+                    crossAxisSpacing: 0,
+                    mainAxisSpacing: 0,
+                  ), 
+                  shrinkWrap: true,
+                  // physics: NeverScrollableScrollPhysics(),
+                  itemCount: listAdmin.length,
+                  itemBuilder: (context, index){
+                    return Container(
+                        child: Padding(
+                          padding: EdgeInsets.only(left: 60,top: 15,bottom: 15),
+                          child: Container(
+                              decoration: BoxDecoration(
+                                 borderRadius: BorderRadius.circular(10),
+                                 color: Colors.white,
+                                  boxShadow:  [
+                                BoxShadow(
+                                  color: Color.fromARGB(255, 187, 187, 187),
+                                  spreadRadius: 2,
+                                  blurRadius: 1,
+                                )
+                              ]
                             ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                SizedBox(height: 25,),
-                                Text(
-                                  "${listAdmin[index].prenom}", style: TextStyle(fontWeight: FontWeight.bold),
-                                ),
-                                SizedBox(height: 5,),
-                                Text(
-                                  "${listAdmin[index].nom}", style: TextStyle(fontWeight: FontWeight.bold),
-                                ),
-                                SizedBox(height: 10,),
-                                Text(
-                                  "${listAdmin[index].phone}"
-                                ),
-                                SizedBox(height: 10,),
-                                Text(
-                                  "${listAdmin[index].email}"
-                                ),
-                                SizedBox(height: 15,),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    
-                                    GestureDetector(
-                                      onTap: () async {
-                                        await updateAdmin(context,listAdmin[index]);
-                                      },
-                                      child: Container(
-                                        height: 40,
-                                        width: 40,
-                                        decoration: BoxDecoration(
-                                        borderRadius:
-                                                  BorderRadius.circular(5),
-                                              color: Colors.blue,
-                                              boxShadow: [
-                                                BoxShadow(
-                                                  color: Color.fromARGB(
-                                                      255, 187, 187, 187),
-                                                  spreadRadius: 0,
-                                                  blurRadius: 1,
-                                                )
-                                              ]),
-                                        child: Icon(Icons.create, color: Colors.white,)),
+                            child: Padding(
+                              padding: const EdgeInsets.only(left: 15,top: 10),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  CircleAvatar(
+                                    radius: 40,
+                                    child: Text("${listAdmin [index].nom![0].toUpperCase()}.${listAdmin [index].prenom!.toUpperCase()[0]}", style: TextStyle(fontSize: 40,fontWeight: FontWeight.bold),)
+                                  ),
+                                  SizedBox(height: 20,),
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Column(
+                                      children: [
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.start,
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Icon(Icons.person, color: MesCouleur().couleurPrincipal,),
+                                            SizedBox(width: 20,),
+                                            Text("${listAdmin[index].prenom}", style: TextStyle(fontWeight: FontWeight.bold),),
+                                          ],
+                                        ),
+                                        SizedBox(height: 10,),
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.start,
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Icon(Icons.person, color: MesCouleur().couleurPrincipal,),
+                                            SizedBox(width: 20,),
+                                            Text("${listAdmin[index].nom}", style: TextStyle(fontWeight: FontWeight.bold),),
+                                          ],
+                                        ),
+                                        SizedBox(height: 10,),
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.start,
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Icon(Icons.phone_android, color: MesCouleur().couleurPrincipal,),
+                                            SizedBox(width: 20,),
+                                            Text("${listAdmin[index].phone}", style: TextStyle(fontWeight: FontWeight.bold),),
+                                          ],
+                                        ),
+                                                                              SizedBox(height: 10,),
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.start,
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Icon(Icons.email, color: MesCouleur().couleurPrincipal,),
+                                            SizedBox(width: 20,),
+                                            Text("${listAdmin[index].email}", style: TextStyle(fontWeight: FontWeight.bold),),
+                                          ],
+                                        ),
+                                        SizedBox(height: 20,),
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          crossAxisAlignment: CrossAxisAlignment.center,
+                                          children: [
+                                            GestureDetector(
+                                              onTap: () async {
+                                                  await updateAdmin(context,listAdmin[index]);
+                                                },
+                                              child: Container(
+                                              height: 30,
+                                              width: 100,
+                                              decoration: BoxDecoration(
+                                              borderRadius:
+                                                        BorderRadius.circular(1),
+                                                    color: Colors.blue,
+                                                    boxShadow: [
+                                                      BoxShadow(
+                                                        color: Color.fromARGB(
+                                                            255, 187, 187, 187),
+                                                        spreadRadius: 0,
+                                                        blurRadius: 1,
+                                                      )
+                                                    ]),
+                                                child: Row(
+                                                  mainAxisAlignment: MainAxisAlignment.center,
+                                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                                  children: [
+                                                    Text("Modifier",style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),),
+                                                    SizedBox(width: 5,),
+                                                    Icon(Icons.edit, color: Colors.white,size: 20,)
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                            SizedBox(width: 50,),
+                                            GestureDetector(
+                                              onTap: () async {
+                                              await showDeleteConfirme(
+                                                        context, listAdmin[index]);
+                                                  },
+                                              child: Container(
+                                              height: 30,
+                                              width: 100,
+                                              decoration: BoxDecoration(
+                                              borderRadius:
+                                                        BorderRadius.circular(1),
+                                                    color: Colors.red,
+                                                    boxShadow: [
+                                                      BoxShadow(
+                                                        color: Color.fromARGB(
+                                                            255, 187, 187, 187),
+                                                        spreadRadius: 0,
+                                                        blurRadius: 1,
+                                                      )
+                                                    ]),
+                                                child: Row(
+                                                  mainAxisAlignment: MainAxisAlignment.center,
+                                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                                  children: [
+                                                    Text("Supprimer",style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),),
+                                                    SizedBox(width: 5,),
+                                                    Icon(Icons.delete, color: Colors.white,size: 20,)
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
                                     ),
-                                    SizedBox(width: 20,),
-                                    GestureDetector(
-                                      onTap: () async {
-                                         await showDeleteConfirme(context, listAdmin[index]);
-                                      },
-                                      child: Container(
-                                        height: 40,
-                                        width: 40,
-                                        decoration: BoxDecoration(
-                                        borderRadius:
-                                                  BorderRadius.circular(5),
-                                              color: Colors.red,
-                                              boxShadow: [
-                                                BoxShadow(
-                                                  color: Color.fromARGB(
-                                                      255, 187, 187, 187),
-                                                  spreadRadius: 0,
-                                                  blurRadius: 1,
-                                                )
-                                              ]),
-                                        child: Icon(Icons.delete, color: Colors.white,)),
-                                    ),
-                                  ],
-                                ),
-                              ],
+                                  ),
+                                ],
+                              ),
                             ),
-                          ],
+                          ),
                         ),
-                      ),
-                    ),
-                  );
-                 } ,
-                ),
+                      // child: Container(
+                      //  height: 10,
+                      //  width: 100,
+                      //   decoration: BoxDecoration(
+                      //       borderRadius: BorderRadius.circular(10),
+                      //       color: Colors.white,
+                      //       boxShadow:  [
+                      //         BoxShadow(
+                      //           color: Color.fromARGB(255, 187, 187, 187),
+                      //           spreadRadius: 2,
+                      //           blurRadius: 1,
+                      //         )
+                      //       ]),
+                      //   child: Column(
+                      //     mainAxisAlignment: MainAxisAlignment.center,
+                      //     crossAxisAlignment: CrossAxisAlignment.center,
+                      //     children: [
+                      //       Padding(
+                      //         padding:  EdgeInsets.only(left: 1, top: 10),
+                      //         child: CircleAvatar(
+                      //            // backgroundImage: AssetImage("assets/images/1.png"),
+                      //             radius: 40,
+                      //             backgroundColor: MesCouleur().couleurPrincipal,
+                      //             child: Text("${listAdmin [index].nom![0].toUpperCase()}.${listAdmin [index].prenom!.toUpperCase()[0]}", style: TextStyle(fontSize: 40,fontWeight: FontWeight.bold),)
+                      //           ),
+                      //       ),
+                      //       Column(
+                      //         crossAxisAlignment: CrossAxisAlignment.start,
+                      //         mainAxisAlignment: MainAxisAlignment.start,
+                      //         children: [
+                      //           SizedBox(height: 25,),
+                      //           Row(
+                      //             mainAxisAlignment: MainAxisAlignment.center,
+                      //             crossAxisAlignment: CrossAxisAlignment.center,
+                      //             children: [
+                      //               Icon(Icons.person),
+                      //               SizedBox(width: 90,),
+                      //               Text(
+                      //                 "${listAdmin[index].prenom}", style: TextStyle(fontWeight: FontWeight.bold),
+                      //               ),
+                      //             ],
+                      //           ),
+                      //           SizedBox(height: 5,),
+                      //           Row(
+                      //             mainAxisAlignment: MainAxisAlignment.center,
+                      //             crossAxisAlignment: CrossAxisAlignment.center,
+                      //             children: [
+                      //               Icon(Icons.person),
+                      //               SizedBox(width: 90,),
+                      //               Text(
+                      //                 "${listAdmin[index].nom}", style: TextStyle(fontWeight: FontWeight.bold),
+                      //               ),
+                      //             ],
+                      //           ),
+                      //           SizedBox(height: 10,),
+                      //           Row(
+                      //             mainAxisAlignment: MainAxisAlignment.center,
+                      //             crossAxisAlignment: CrossAxisAlignment.center,
+                      //             children: [
+                      //               Icon(Icons.phone_android),
+                      //               SizedBox(width: 90,),
+                      //               Text(
+                      //                 "${listAdmin[index].phone}"
+                      //               ),
+                      //             ],
+                      //           ),
+                      //           SizedBox(height: 10,),
+                      //           Row(
+                      //             mainAxisAlignment: MainAxisAlignment.center,
+                      //             crossAxisAlignment: CrossAxisAlignment.center,
+                      //             children: [
+                      //               Icon(Icons.email),
+                      //               SizedBox(width: 10,),
+                      //               Text(
+                      //                 "${listAdmin[index].email}"
+                      //               ),
+                      //             ],
+                      //           ),
+                      //           SizedBox(height: 15,),
+                      //           Row(
+                      //             mainAxisAlignment: MainAxisAlignment.center,
+                      //             children: [
+                                    
+                      //               GestureDetector(
+                      //                 onTap: () async {
+                      //                   await updateAdmin(context,listAdmin[index]);
+                      //                 },
+                      //                 child: Container(
+                      //                   height: 40,
+                      //                   width: 40,
+                      //                   decoration: BoxDecoration(
+                      //                   borderRadius:
+                      //                             BorderRadius.circular(5),
+                      //                         color: Colors.blue,
+                      //                         boxShadow: [
+                      //                           BoxShadow(
+                      //                             color: Color.fromARGB(
+                      //                                 255, 187, 187, 187),
+                      //                             spreadRadius: 0,
+                      //                             blurRadius: 1,
+                      //                           )
+                      //                         ]),
+                      //                   child: Icon(Icons.create, color: Colors.white,)),
+                      //               ),
+                      //               SizedBox(width: 20,),
+                      //               GestureDetector(
+                      //                 onTap: () async {
+                      //                    await showDeleteConfirme(context, listAdmin[index]);
+                      //                 },
+                      //                 child: Container(
+                      //                   height: 40,
+                      //                   width: 40,
+                      //                   decoration: BoxDecoration(
+                      //                   borderRadius:
+                      //                             BorderRadius.circular(5),
+                      //                         color: Colors.red,
+                      //                         boxShadow: [
+                      //                           BoxShadow(
+                      //                             color: Color.fromARGB(
+                      //                                 255, 187, 187, 187),
+                      //                             spreadRadius: 0,
+                      //                             blurRadius: 1,
+                      //                           )
+                      //                         ]),
+                      //                   child: Icon(Icons.delete, color: Colors.white,)),
+                      //               ),
+                      //             ],
+                      //           ),
+                      //         ],
+                      //       ),
+                      //     ],
+                      //   ),
+                      // ),
+                    );
+                   } ,
+                  ),
+              ),
             )
           ],
         ),
