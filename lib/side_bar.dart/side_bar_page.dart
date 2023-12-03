@@ -5,6 +5,7 @@ import 'package:dashboard1/models/userModel.dart';
 import 'package:dashboard1/pages/login.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:firebase_database/firebase_database.dart';
 
@@ -47,35 +48,35 @@ class _SideBarpageState extends State<SideBarpage> {
                   SizedBox(height: 80,),
                   ListTile(
                     title: Text("Dashboard"),
-                    leading: Icon(Icons.dashboard, color: Color.fromARGB(255, 78, 78, 78), size: 30,),
+                    leading: Icon(Icons.dashboard, ),
                     onTap: ()=> sideBarController.index.value=0,
                     selected: sideBarController.index.value==0,
                   ),
                   SizedBox(height: 10,),
                   ListTile(
                     title: Text("Réservation"),
-                    leading: Image.asset("assets/icons/9.png"),
+                    leading: Icon(Icons.phone_android),
                     onTap: ()=> sideBarController.index.value=1,
                     selected: sideBarController.index.value==1,
                   ),
                   SizedBox(height: 10,),
                   ListTile(
                     title: Text("Passagers"),
-                    leading: Image.asset("assets/icons/8.png",),
+                    leading: Icon(FontAwesomeIcons.person),
                     onTap: ()=> sideBarController.index.value=2,
                     selected: sideBarController.index.value==2,
                   ),
                   SizedBox(height: 10,),
                   ListTile(
                     title: Text("Chauffeurs"),
-                    leading: Image.asset("assets/icons/7.png"),
+                    leading: Icon(Icons.directions_car),
                     onTap: ()=> sideBarController.index.value=3,
                     selected: sideBarController.index.value==3,
                   ),
                   SizedBox(height: 10,),
                   ListTile(
                     title: Text("Administrateur"),
-                    leading: Icon(Icons.person, color: Color.fromARGB(255, 78, 78, 78), size: 30,),
+                    leading: Icon(Icons.person,),
                     onTap: ()=> sideBarController.index.value=4,
                     selected: sideBarController.index.value==4,
                   ),

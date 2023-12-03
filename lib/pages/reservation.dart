@@ -75,7 +75,7 @@ class _ReservationState extends State<Reservation> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                    children: [
                      Text(
-                      "Liste des reservations",
+                      "Liste des réservations",
                       style: TextStyle(fontSize: 25,fontWeight: FontWeight.bold,color: MesCouleur().couleurPrincipal),
                     ),
                     SizedBox(height: 10,),

@@ -733,7 +733,7 @@ class _AdministrateurState extends State<Administrateur> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                              children: [
                                Text(
-                                "Liste des reservations",
+                                "Liste des administrateurs",
                                 style: TextStyle(
                                     fontSize: 25,
                                     fontWeight: FontWeight.bold,
@@ -886,7 +886,7 @@ class _AdministrateurState extends State<Administrateur> {
                                               width: 100,
                                               decoration: BoxDecoration(
                                               borderRadius:
-                                                        BorderRadius.circular(1),
+                                                        BorderRadius.circular(5),
                                                     color: Colors.blue,
                                                     boxShadow: [
                                                       BoxShadow(
@@ -918,7 +918,7 @@ class _AdministrateurState extends State<Administrateur> {
                                               width: 100,
                                               decoration: BoxDecoration(
                                               borderRadius:
-                                                        BorderRadius.circular(1),
+                                                        BorderRadius.circular(5),
                                                     color: Colors.red,
                                                     boxShadow: [
                                                       BoxShadow(

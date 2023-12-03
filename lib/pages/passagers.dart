@@ -64,23 +64,23 @@ class _PassagersState extends State<Passagers> {
         child: Column(
           children: [
             Padding(
-              padding: const EdgeInsets.only(left: 40,top: 50),
+              padding: const EdgeInsets.only(left: 8,top: 50),
               child: Container(
                 // width: 1200,
                 // height: 80,
                  child: Padding(
-                   padding:  EdgeInsets.all(16.0),
+                   padding:  EdgeInsets.all(20.0),
                    child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                      children: [
                      Text(
-                      "Liste des reservations",
+                      "Liste des passagers",
                       style: TextStyle(fontSize: 25,fontWeight: FontWeight.bold,color: MesCouleur().couleurPrincipal),
                     ),
                     SizedBox(height: 10,),
                     Container(
-                      width: 1100,
+                      width: 2000,
                       child: Divider(height: 1, thickness: 1, color: MesCouleur().couleurPrincipal)),
                   ],
                    ),
@@ -104,13 +104,13 @@ class _PassagersState extends State<Passagers> {
                 itemBuilder: (context, index){
                   return Container(
                     child: Padding(
-                      padding: EdgeInsets.all(35.0),
+                      padding: EdgeInsets.all(15.0),
                       child: Container(
-                       height: 50,
-                       width: 100,
+                       height: 10,
+                       width: 110,
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(10),
-                            color: Colors.white,
+                            color: Color.fromARGB(255, 239, 253, 178),
                             boxShadow: const [
                               BoxShadow(
                                 color: Color.fromARGB(255, 187, 187, 187),
@@ -134,17 +134,45 @@ class _PassagersState extends State<Passagers> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
-                                SizedBox(height: 25,),
-                                Text(
-                                  "${listUsers[index].prenom}"
+                                SizedBox(height: 30,),
+                                Row(
+                                  children: [
+                                    Icon(Icons.person, color: MesCouleur().couleurPrincipal,),
+                                    SizedBox(width: 20,),
+                                    Text(
+                                      "${listUsers[index].prenom}"
+                                    ),
+                                  ],
                                 ),
-                                SizedBox(height: 5,),
-                                Text(
-                                  "${listUsers[index].prenom}"
+                                SizedBox(height: 0,),
+                                Row(
+                                  children: [
+                                    Icon(Icons.person, color: MesCouleur().couleurPrincipal,),
+                                    SizedBox(width: 20,),
+                                    Text(
+                                      "${listUsers[index].nom}"
+                                    ),
+                                  ],
                                 ),
-                                SizedBox(height: 10,),
-                                Text(
-                                  "${listUsers[index].email}"
+                                SizedBox(height: 0,),
+                                Row(
+                                  children: [
+                                    Icon(Icons.phone_android, color: MesCouleur().couleurPrincipal,),
+                                    SizedBox(width: 20,),
+                                    Text(
+                                      "${listUsers[index].phone}"
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(height: 0,),
+                                Row(
+                                  children: [
+                                    Icon(Icons.email, color: MesCouleur().couleurPrincipal,),
+                                    SizedBox(width: 20,),
+                                    Text(
+                                      "${listUsers[index].email}"
+                                    ),
+                                  ],
                                 ),
                               ],
                             ),
