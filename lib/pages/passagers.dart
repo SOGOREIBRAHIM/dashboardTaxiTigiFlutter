@@ -74,13 +74,15 @@ class _PassagersState extends State<Passagers> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                      children: [
-                       Text(
-                        "Liste des passagers",
-                        style: TextStyle(fontSize: 20),
-                      ),
-                      SizedBox(height: 10,),
-                      Divider(height: 1, thickness: 1, color: Colors.black),
-                    ],
+                     Text(
+                      "Liste des reservations",
+                      style: TextStyle(fontSize: 25,fontWeight: FontWeight.bold,color: MesCouleur().couleurPrincipal),
+                    ),
+                    SizedBox(height: 10,),
+                    Container(
+                      width: 1100,
+                      child: Divider(height: 1, thickness: 1, color: MesCouleur().couleurPrincipal)),
+                  ],
                    ),
                    
                  ),
@@ -125,7 +127,7 @@ class _PassagersState extends State<Passagers> {
                                                         // backgroundImage: AssetImage("assets/images/1.png"),
                                   radius: 40,
                                   backgroundColor: MesCouleur().couleurPrincipal,
-                                  child: Icon(Icons.person,size: 50,)
+                                  child: Text("${listUsers [index].nom![0].toUpperCase()}.${listUsers [index].prenom!.toUpperCase()[0]}", style: TextStyle(fontSize: 40,fontWeight: FontWeight.bold),)
                                 ),
                             ),
                             Column(

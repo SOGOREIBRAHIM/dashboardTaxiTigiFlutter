@@ -34,36 +34,37 @@ class _DashboardState extends State<Dashboard> {
           children: [
             Row(
               children: [
+                SizedBox(width: 30,),
                 Padding(
-                  padding: const EdgeInsets.all(50.0),
+                  padding: const EdgeInsets.all(60.0),
                   child: Container(
                     height: 150,
                     width: 270,
-                    decoration: const BoxDecoration(
+                    decoration: BoxDecoration(
                         boxShadow: [
                           BoxShadow(
-                              color: Color.fromARGB(255, 107, 105, 105),
+                              color: MesCouleur().couleurPrincipal,
                               spreadRadius: 1,
-                              blurRadius: 5)
+                              blurRadius: 2)
                         ],
-                        color: Colors.white,
+                        color: Color.fromARGB(255, 232, 253, 140),
                         borderRadius: BorderRadius.all(
                           Radius.circular(10),
                         )),
                         child: Padding(
-                          padding: const EdgeInsets.all(8.0),
+                          padding: const EdgeInsets.all(4.0),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Row(
                                 children: [
-                                  Text("57 ", style: TextStyle(fontSize: 60, color: Colors.blue),),
+                                  Text("57 ", style: TextStyle(fontSize: 70, color: Colors.blue),),
                                   SizedBox(width: 70,),
                                   CircleAvatar(
                           // backgroundImage: AssetImage("assets/images/1.png"),
-                                radius: 50,
-                                backgroundColor: MesCouleur().couleurPrincipal,
-                                child: Image.asset("assets/icons/moto.png")
+                                radius: 40,
+                                backgroundColor: Colors.white,
+                                child: Image.asset("assets/icons/moto.png",width: 50,)
                               ),
                                 ],
                               ),
@@ -74,37 +75,37 @@ class _DashboardState extends State<Dashboard> {
                         ),
                   ),
                 ),
-            
+            // SizedBox(width: 10,),
                Padding(
-                  padding: const EdgeInsets.all(50.0),
+                  padding: const EdgeInsets.all(10.0),
                   child: Container(
                     height: 150,
                     width: 270,
-                    decoration: const BoxDecoration(
+                    decoration: BoxDecoration(
                         boxShadow: [
                           BoxShadow(
-                              color: Color.fromARGB(255, 107, 105, 105),
+                              color: MesCouleur().couleurPrincipal,
                               spreadRadius: 1,
-                              blurRadius: 5)
+                              blurRadius: 2)
                         ],
-                        color: Colors.white,
+                        color: Color(0xFFFFD6DC),
                         borderRadius: BorderRadius.all(
                           Radius.circular(10),
                         )),
                         child: Padding(
-                          padding: const EdgeInsets.all(8.0),
+                          padding: const EdgeInsets.all(4.0),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Row(
                                 children: [
-                                  Text("19 ", style: TextStyle(fontSize: 60, color: Colors.blue),),
+                                  Text("19 ", style: TextStyle(fontSize: 70, color: Colors.blue),),
                                   SizedBox(width: 70,),
                                   CircleAvatar(
                           // backgroundImage: AssetImage("assets/images/1.png"),
-                                radius: 50,
-                                backgroundColor: MesCouleur().couleurPrincipal,
-                                child: Image.asset("assets/icons/car.png")
+                                radius: 40,
+                                backgroundColor: Colors.white,
+                                child: Image.asset("assets/icons/car.png",width: 90,)
                               ),
                                 ],
                               ),
@@ -115,37 +116,37 @@ class _DashboardState extends State<Dashboard> {
                         ),
                   ),
                 ),
-            
+              SizedBox(width: 50,),
                 Padding(
-                  padding: const EdgeInsets.all(50.0),
+                  padding: EdgeInsets.all(10.0),
                   child: Container(
                     height: 150,
                     width: 270,
-                    decoration: const BoxDecoration(
+                    decoration: BoxDecoration(
                         boxShadow: [
                           BoxShadow(
-                              color: Color.fromARGB(255, 107, 105, 105),
+                              color: MesCouleur().couleurPrincipal,
                               spreadRadius: 1,
-                              blurRadius: 5)
+                              blurRadius: 2)
                         ],
-                        color: Colors.white,
+                        color: Color(0xFFD8FAE7),
                         borderRadius: BorderRadius.all(
                           Radius.circular(10),
                         )),
                         child: Padding(
-                          padding: const EdgeInsets.all(8.0),
+                          padding: const EdgeInsets.all(4.0),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Row(
                                 children: [
-                                  Text("38 ", style: TextStyle(fontSize: 60, color: Colors.blue),),
+                                  Text("38 ", style: TextStyle(fontSize: 70, color: Colors.blue),),
                                   SizedBox(width: 70,),
                                   CircleAvatar(
                           // backgroundImage: AssetImage("assets/images/1.png"),
-                                radius: 50,
-                                backgroundColor: MesCouleur().couleurPrincipal,
-                                child: Image(image: AssetImage("assets/icons/4.png"),),
+                                radius: 40,
+                                backgroundColor: Colors.white,
+                                child: Image.asset("assets/icons/4.png",width: 70,)
                               ),
                                 ],
                               ),

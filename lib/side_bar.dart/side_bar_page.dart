@@ -2,6 +2,7 @@ import 'package:dashboard1/config/configurationCouleur.dart';
 import 'package:dashboard1/controller/side_bar_controller.dart';
 import 'package:dashboard1/global/global.dart';
 import 'package:dashboard1/models/userModel.dart';
+import 'package:dashboard1/pages/login.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -29,7 +30,7 @@ class _SideBarpageState extends State<SideBarpage> {
           Expanded(
             flex: 1,
             child: Container(
-              color: Color(0xFFF5F5F5),
+              color: Color.fromARGB(255, 218, 224, 224),
               child: Obx(()=>ListView(
                 children: [
                   SizedBox(height: 20,),
@@ -60,7 +61,7 @@ class _SideBarpageState extends State<SideBarpage> {
                   SizedBox(height: 10,),
                   ListTile(
                     title: Text("Passagers"),
-                    leading: Image.asset("assets/icons/8.png"),
+                    leading: Image.asset("assets/icons/8.png",),
                     onTap: ()=> sideBarController.index.value=2,
                     selected: sideBarController.index.value==2,
                   ),
@@ -78,12 +79,35 @@ class _SideBarpageState extends State<SideBarpage> {
                     onTap: ()=> sideBarController.index.value=4,
                     selected: sideBarController.index.value==4,
                   ),
-                  SizedBox(height: 70,),
-                  ListTile(
-                    title: Text("${widget.userMap["nom"]}", style: TextStyle(fontWeight: FontWeight.bold),),
-                    subtitle: Text("${widget.userMap["prenom"]}", style: TextStyle(fontWeight: FontWeight.bold),),
-                    leading: Image.asset("assets/icons/profil.png"),
+                  SizedBox(height: 40,),
+                  
                     
+                    ListTile(
+                      title: Text("${widget.userMap["nom"]}", style: TextStyle(fontWeight: FontWeight.bold),),
+                      subtitle: Text("${widget.userMap["prenom"]}", style: TextStyle(fontWeight: FontWeight.bold),),
+                      leading: Image.asset("assets/icons/profil.png"),
+                      
+                    ),
+                  
+                  GestureDetector(
+                    onTap: (){
+                      firebaseAuth.signOut();
+                            Navigator.of(context).pop();
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: ((context) => Connexion())));
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 20),
+                      child: Row(
+                        children: [
+                          Text("Se deconnecter"),
+                          SizedBox(width: 25,),
+                          Icon(Icons.exit_to_app, color: Colors.red,),
+                        ],
+                      ),
+                    ),
                   ),
                 ],
               ),)
