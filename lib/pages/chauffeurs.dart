@@ -14,7 +14,7 @@ class Chauffeurs extends StatefulWidget {
 }
 
 class _ChauffeursState extends State<Chauffeurs> {
-  bool isActive = false;
+  List<bool> driversStatus = List.generate(listDriver.length, (index) => true);
 
   DatabaseReference driversRef =
       FirebaseDatabase.instance.ref().child("drivers");
@@ -125,7 +125,10 @@ class _ChauffeursState extends State<Chauffeurs> {
                 shrinkWrap: true,
                 // physics: NeverScrollableScrollPhysics(),
                 itemCount: listDriver.length,
-                itemBuilder: (context, index) {
+                itemBuilder: (
+                  context,
+                  index,
+                ) {
                   return Container(
                     child: Padding(
                       padding: EdgeInsets.all(15.0),
@@ -147,7 +150,7 @@ class _ChauffeursState extends State<Chauffeurs> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Padding(
-                              padding:  EdgeInsets.all(20.0),
+                              padding: EdgeInsets.all(20.0),
                               child: CircleAvatar(
                                   // backgroundImage: AssetImage("assets/images/1.png"),
                                   radius: 40,
@@ -221,61 +224,87 @@ class _ChauffeursState extends State<Chauffeurs> {
                                         width: 20,
                                       ),
                                       Text("${listDriver[index].email}"),
-                                      
                                     ],
                                   ),
-                                  SizedBox(height: 30,),
+                                  SizedBox(
+                                    height: 30,
+                                  ),
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
                                     children: [
                                       ElevatedButton(
-                                  onPressed: () {
-                                    deactivateDriver("${listDriver[index].id}");
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.white,
-                            padding: EdgeInsets.symmetric(horizontal: 18),
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(5)
-                                )
-                                ),
-                                  child: const Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                   
-                                    children: [
-                                      Icon(Icons.cancel, color: Colors.red), 
-                                      SizedBox(width: 8.0), 
-                                      Text("Désactiver"),
-                                    ],
-                                  ),
-                                ),
-                                SizedBox(width: 40,),
-                                ElevatedButton(
-                                  onPressed: () {
-                                    activateDriver("${listDriver[index].id}");
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.white,
-                            padding: EdgeInsets.symmetric(horizontal: 18),
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(5)
-                                )
-                                ),
-       
-                                  child: const Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Icon(Icons.check_circle,
-                                          color: Colors
-                                              .green), // Icône d'activation
-                                      SizedBox(
-                                          width:
-                                              8.0), // Espacement entre l'icône et le texte
-                                      Text("Activer"),
-                                    ],
-                                  ),
-                                ),
+                                        onPressed: () {
+                                          deactivateDriver(
+                                              "${listDriver[index].id}");
+                                          setState(() {
+                                            driversStatus[index] = false;
+                                          });
+                                        },
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: driversStatus[index]
+                                              ? Colors.white
+                                              : Colors.red,
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal: 18),
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(5),
+                                          ),
+                                        ),
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Icon(Icons.cancel,
+                                                color: driversStatus[index]
+                                                     ? Colors.red
+                                              : Colors.white),
+                                            SizedBox(width: 8.0),
+                                            Text("Désactiver",
+                                                style: TextStyle(
+                                                    color: driversStatus[index]
+                                                         ? Colors.red
+                                              : Colors.white)),
+                                          ],
+                                        ),
+                                      ),
+                                      SizedBox(width: 40),
+                                      ElevatedButton(
+                                        onPressed: () {
+                                          activateDriver(
+                                              "${listDriver[index].id}");
+                                          setState(() {
+                                            driversStatus[index] = true;
+                                          });
+                                        },
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: driversStatus[index]
+                                              ? Colors.green
+                                              : Colors.white,
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal: 18),
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(5),
+                                          ),
+                                        ),
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Icon(Icons.check_circle,
+                                                color: driversStatus[index]
+                                                     ? Colors.white
+                                              : Colors.green),
+                                            SizedBox(width: 8.0),
+                                            Text("Activer",
+                                                style: TextStyle(
+                                                    color: driversStatus[index]
+                                                         ? Colors.white
+                                              : Colors.green)),
+                                          ],
+                                        ),
+                                      ),
                                     ],
                                   )
                                 ],

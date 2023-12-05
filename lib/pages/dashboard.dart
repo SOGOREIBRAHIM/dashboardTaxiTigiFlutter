@@ -1,4 +1,5 @@
 import 'package:dashboard1/config/configurationCouleur.dart';
+import 'package:dashboard1/models/reservation.dart';
 import 'package:flutter/material.dart';
 import 'package:pie_chart/pie_chart.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -79,7 +80,34 @@ class _DashboardState extends State<Dashboard> {
     
   }
 
+static Future<void> getAllReservation() async {
+  DatabaseReference reservationRef = FirebaseDatabase.instance.ref().child("All Ride Request");
+  final snap = await reservationRef.once();
 
+  if(snap.snapshot.value != null){
+    Map<dynamic, dynamic> reservationMap = snap.snapshot.value as Map<dynamic, dynamic>;
+
+    // Effacer la liste avant de la remplir pour éviter d'accumuler des éléments
+    listReservation.clear();
+
+    reservationMap.forEach((key, value) {
+      print('ID: $key');
+      print('${value}');
+      ReservationModel reservationModel = ReservationModel(
+        destinationAdress: value["destinationAdress"],
+        originAdress: value["originAdress"],
+        username: value["username"],
+        userphone: value["userphone"],
+      ); 
+
+      listReservation.add(reservationModel);
+      
+    });
+
+    print("Listes des réservations");
+    print(listReservation);
+  }
+}
 
   int choixIndex = 0;
 
@@ -230,7 +258,7 @@ class _DashboardState extends State<Dashboard> {
                             children: [
                               Row(
                                 children: [
-                                  Text("38 ", style: TextStyle(fontSize: 70, color: Colors.blue),),
+                                  Text("${listReservation.length}", style: TextStyle(fontSize: 70, color: Colors.blue),),
                                   SizedBox(width: 70,),
                                   CircleAvatar(
                           // backgroundImage: AssetImage("assets/images/1.png"),
