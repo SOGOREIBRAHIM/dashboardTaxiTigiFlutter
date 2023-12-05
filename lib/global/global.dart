@@ -1,5 +1,6 @@
 import 'package:dashboard1/models/adminModel.dart';
 import 'package:dashboard1/models/driverModel.dart';
+import 'package:dashboard1/models/reservation.dart';
 import 'package:dashboard1/models/userModel.dart';
 import 'package:dashboard1/pages/administrateur.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -18,6 +19,10 @@ List<UserModel> listUsers = [];
 List<DriverModel> listDriver = [];
 
 List<AdminModel> listAdmin = [];
+
+int nbrDivers = 0;
+
+List<ReservationModel> listReservation = [];
 
 
 

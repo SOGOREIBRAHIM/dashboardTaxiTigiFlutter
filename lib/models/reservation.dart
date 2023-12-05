@@ -2,28 +2,32 @@
 import 'package:firebase_database/firebase_database.dart';
 
 class ReservationModel {
-  int? destination;
+  String? destinationAdress;
+  String? driverId;
   String? originAdress;
-  int? time;
-  String? name;
-  int? phone;
+  DateTime? time;
+  String? username;
+  String? userphone;
 
 
   ReservationModel({
-    this.destination,
-    this.originAdress,
-    this.time,
-    this.phone,
-    this.name
+     this.destinationAdress,
+     this.driverId,
+     this.originAdress,
+     this.time,
+     this.username,
+     this.userphone,
   });
 
-  ReservationModel.fromSnapshot(DataSnapshot snap){
-   
-    originAdress = (snap.value as dynamic)["originAdress"];
-    destination = (snap.value as dynamic)["destinationAdress"];
-    time = (snap.value as dynamic)["time"];
-    phone = (snap.value as dynamic)["phone"];
-    name = (snap.value as dynamic)["numero"];
+  factory ReservationModel.fromJson(Map<String, dynamic> json) {
+    return ReservationModel(
+      destinationAdress: json['destinationAdress'],
+      driverId: json['driverId'],
+      originAdress: json['originAdress'],
+      time: DateTime.parse(json['time']),
+      username: json['username'],
+      userphone: json['userphone'],
+    );
   }
 
   

@@ -1,4 +1,5 @@
 import 'package:dashboard1/config/configurationCouleur.dart';
+import 'package:dashboard1/global/global.dart';
 import 'package:dashboard1/models/reservation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -14,36 +15,39 @@ class Reservation extends StatefulWidget {
 class _ReservationState extends State<Reservation> {
 
   // Recperation de la liste Administrateur
-  static Future<void> getAllReservation() async {
+  // Déclarer une variable globale pour stocker la liste des réservations
 
-    DatabaseReference reservationRef = FirebaseDatabase.instance.ref().child("All Ride Request");
-    final snap = await reservationRef.once();
 
-    if(snap.snapshot.value != null){
-      Map<dynamic, dynamic> reservationMap = snap.snapshot.value as Map<dynamic, dynamic>;
+static Future<void> getAllReservation() async {
+  DatabaseReference reservationRef = FirebaseDatabase.instance.ref().child("All Ride Request");
+  final snap = await reservationRef.once();
 
-    List listReservation = [];
+  if(snap.snapshot.value != null){
+    Map<dynamic, dynamic> reservationMap = snap.snapshot.value as Map<dynamic, dynamic>;
+
+    // Effacer la liste avant de la remplir pour éviter d'accumuler des éléments
+    listReservation.clear();
 
     reservationMap.forEach((key, value) {
-    print('ID: $key');
-    ReservationModel reservationModel = ReservationModel(
-      destination: value["destinationAdress"],
-      originAdress: value["originAdress"],
-      phone: value["userphone"],
-      name: value["name"]
-    ); 
+      print('ID: $key');
+      print('${value}');
+      ReservationModel reservationModel = ReservationModel(
+        destinationAdress: value["destinationAdress"],
+        originAdress: value["originAdress"],
+        username: value["username"],
+        userphone: value["userphone"],
+      ); 
 
-    listReservation.add(reservationModel);
-    print("List rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr");
+      listReservation.add(reservationModel);
+    });
+
+    print("Listes des réservations");
     print(listReservation);
-    
-  });
-
-  
-
   }
-    
-  }
+}
+
+// Vous pouvez maintenant appeler getAllReservation() ailleurs dans votre code
+
 
 
   @override
@@ -92,13 +96,13 @@ class _ReservationState extends State<Reservation> {
               child: GridView.builder(
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 3,
-                  childAspectRatio: 1.1,
+                  childAspectRatio: 1,
                   crossAxisSpacing: 0,
                   mainAxisSpacing: 0,
                 ), 
                 shrinkWrap: true,
                 // physics: NeverScrollableScrollPhysics(),
-                itemCount: 6,
+                itemCount: listReservation.length,
                 itemBuilder: (context, index){
                   return Container(
                     child: Padding(
@@ -138,7 +142,7 @@ class _ReservationState extends State<Reservation> {
                                       Icon(Icons.location_pin,color: Colors.blue,),
                                       SizedBox(width: 50,),
                                       Text(
-                                        "Amdallaye ACI 2000", style: TextStyle(fontWeight: FontWeight.bold),
+                                        "${listReservation[index].originAdress}", style: TextStyle(fontWeight: FontWeight.bold),
                                       ),
                                     ],
                                   ),
@@ -149,17 +153,27 @@ class _ReservationState extends State<Reservation> {
                                       Icon(Icons.location_searching, color: Colors.red,),
                                       SizedBox(width: 50,),
                                       Text(
-                                        "Magnambougou projet", style: TextStyle(fontWeight: FontWeight.bold),
+                                        "${listReservation[index].destinationAdress}", style: TextStyle(fontWeight: FontWeight.bold),
                                       ),
                                     ],
                                   ),
                                   SizedBox(height: 10,),
                                   Row(
                                     children: [
-                                      Icon(Icons.car_crash,color: Colors.orange,),
+                                      Icon(Icons.person,color: Colors.orange,),
                                       SizedBox(width: 50,),
                                       Text(
-                                        "Economique",style: TextStyle(fontWeight: FontWeight.bold),
+                                        "${listReservation[index].username}",style: TextStyle(fontWeight: FontWeight.bold),
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(height: 10,),
+                                  Row(
+                                    children: [
+                                      Icon(Icons.phone_android,color: Colors.orange,),
+                                      SizedBox(width: 50,),
+                                      Text(
+                                        "${listReservation[index].userphone}",style: TextStyle(fontWeight: FontWeight.bold),
                                       ),
                                     ],
                                   ),

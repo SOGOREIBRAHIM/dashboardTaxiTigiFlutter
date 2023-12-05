@@ -1,6 +1,14 @@
 import 'package:dashboard1/config/configurationCouleur.dart';
 import 'package:flutter/material.dart';
 import 'package:pie_chart/pie_chart.dart';
+import 'package:firebase_database/firebase_database.dart';
+import 'package:dashboard1/models/driverModel.dart';
+import 'package:dashboard1/global/global.dart';
+import 'package:dashboard1/models/userModel.dart';
+
+
+
+
 
 class Dashboard extends StatefulWidget {
   const Dashboard({super.key});
@@ -11,12 +19,80 @@ class Dashboard extends StatefulWidget {
 
 class _DashboardState extends State<Dashboard> {
 
+
+   static Future<void> getCompteDrivers() async {
+
+    DatabaseReference driversRef = FirebaseDatabase.instance.ref().child("drivers");
+    final snap = await driversRef.once();
+
+    if(snap.snapshot.value != null){
+      Map<dynamic, dynamic> driversMap = snap.snapshot.value as Map<dynamic, dynamic>;
+
+      listDriver = [];
+    driversMap.forEach((key, value) {
+    print('ID: $key');
+    DriverModel driverModel = DriverModel(
+      id: key,
+      nom: value["nom"],
+      prenom: value["prenom"],
+      phone: value["numero"],
+      email: value["email"]
+    ); 
+
+    listDriver.add(driverModel);
+    print('TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT');
+    print('Number of drivers: ${listDriver.length}');
+    
+  });
+
+  
+
+  }
+    
+  }
+
+   static Future<void> getCompteUsers() async {
+    DatabaseReference usersRef = FirebaseDatabase.instance.ref().child("users");
+
+    final snap = await usersRef.once();
+    if(snap.snapshot.value != null){
+      listUsers = [];
+      Map<dynamic, dynamic> usersMap = snap.snapshot.value as Map<dynamic, dynamic>;
+
+    usersMap.forEach((key, value) {
+    print('ID: $key');
+    UserModel userModel = UserModel(
+      id: key,
+      nom: value["nom"],
+      prenom: value["prenom"],
+      phone: value["numero"],
+      email: value["email"]
+    ); 
+
+    listUsers.add(userModel);
+    
+  });
+
+  
+
+    }
+    
+  }
+
+
+
   int choixIndex = 0;
 
   Map<String, double> dataMap = {
     "Chauffeurs Activés" : 18.47,
     "Chauffeurs Désactivés" : 68.47,
-    "Chauffeurs Total" : 18.47,
+    "Total Chauffeurs" : 18.47,
+  };
+
+  Map<String, double> dataMapReservation = {
+    "Réservation effectuées" : 20,
+    "Réservation en attente" : 30,
+    "Total Réservation" : 50,
   };
 
   List<Color> colorList = [
@@ -25,7 +101,21 @@ class _DashboardState extends State<Dashboard> {
     Color.fromARGB(255, 243, 159, 90),
   ];
 
-
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getCompteUsers().then((value) {
+      setState(() {
+        
+      });
+    });
+    getCompteDrivers().then((value) {
+      setState(() {
+        
+      });
+    });
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -58,18 +148,18 @@ class _DashboardState extends State<Dashboard> {
                             children: [
                               Row(
                                 children: [
-                                  Text("57 ", style: TextStyle(fontSize: 70, color: Colors.blue),),
+                                  Text("${listDriver.length}", style: TextStyle(fontSize: 70, color: Colors.blue),),
                                   SizedBox(width: 70,),
                                   CircleAvatar(
                           // backgroundImage: AssetImage("assets/images/1.png"),
                                 radius: 40,
                                 backgroundColor: Colors.white,
-                                child: Image.asset("assets/icons/moto.png",width: 50,)
+                                child: Image.asset("assets/icons/drivers.png",width: 50,)
                               ),
                                 ],
                               ),
                               SizedBox(height: 10,),
-                              Text("Conducteur de moto en ligne", style: TextStyle(fontSize: 15, color: Colors.black, fontWeight: FontWeight.bold),),
+                              Text("Nombre de conducteurs connectés", style: TextStyle(fontSize: 15, color: Colors.black, fontWeight: FontWeight.bold),),
                             ],
                           ),
                         ),
@@ -99,18 +189,18 @@ class _DashboardState extends State<Dashboard> {
                             children: [
                               Row(
                                 children: [
-                                  Text("19 ", style: TextStyle(fontSize: 70, color: Colors.blue),),
+                                  Text("${listUsers.length}", style: TextStyle(fontSize: 70, color: Colors.blue),),
                                   SizedBox(width: 70,),
                                   CircleAvatar(
                           // backgroundImage: AssetImage("assets/images/1.png"),
                                 radius: 40,
                                 backgroundColor: Colors.white,
-                                child: Image.asset("assets/icons/car.png",width: 90,)
+                                child: Image.asset("assets/icons/passenger.png",width: 90,)
                               ),
                                 ],
                               ),
                               SizedBox(height: 10,),
-                              Text("Conducteurs Economique en ligne", style: TextStyle(fontSize: 15, color: Colors.black, fontWeight: FontWeight.bold),),
+                              Text("Nombre de passagers connectés", style: TextStyle(fontSize: 15, color: Colors.black, fontWeight: FontWeight.bold),),
                             ],
                           ),
                         ),
@@ -146,12 +236,12 @@ class _DashboardState extends State<Dashboard> {
                           // backgroundImage: AssetImage("assets/images/1.png"),
                                 radius: 40,
                                 backgroundColor: Colors.white,
-                                child: Image.asset("assets/icons/4.png",width: 70,)
+                                child: Image.asset("assets/icons/reservation.png",width: 50,)
                               ),
                                 ],
                               ),
                               SizedBox(height: 10,),
-                              Text("Conducteurs Prenium en ligne", style: TextStyle(fontSize: 15, color: Colors.black, fontWeight: FontWeight.bold),),
+                              Text("Nombre de réservation effectuées", style: TextStyle(fontSize: 15, color: Colors.black, fontWeight: FontWeight.bold),),
                             ],
                           ),
                         ),
@@ -207,10 +297,10 @@ class _DashboardState extends State<Dashboard> {
                           )),
                         
                     child: PieChart(
-                        dataMap: dataMap,
+                        dataMap: dataMapReservation,
                         colorList: colorList,
                         chartRadius: MediaQuery.of(context).size.width/2,
-                        centerText: "Chauffeurs",
+                        centerText: "Reservations",
                         chartValuesOptions: ChartValuesOptions(
                           showChartValues: true,
                           showChartValuesOutside: true,
