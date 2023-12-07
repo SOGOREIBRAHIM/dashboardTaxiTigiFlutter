@@ -133,6 +133,13 @@ static Future<void> getAllReservation() async {
   void initState() {
     // TODO: implement initState
     super.initState();
+
+    getAllReservation().then((value) {
+      setState(() {
+        
+      });
+    });
+
     getCompteUsers().then((value) {
       setState(() {
         
@@ -187,7 +194,7 @@ static Future<void> getAllReservation() async {
                                 ],
                               ),
                               SizedBox(height: 10,),
-                              Text("Nombre de conducteurs connectés", style: TextStyle(fontSize: 15, color: Colors.black, fontWeight: FontWeight.bold),),
+                              Text("Total des conducteurs", style: TextStyle(fontSize: 15, color: Colors.black, fontWeight: FontWeight.bold),),
                             ],
                           ),
                         ),
@@ -228,7 +235,7 @@ static Future<void> getAllReservation() async {
                                 ],
                               ),
                               SizedBox(height: 10,),
-                              Text("Nombre de passagers connectés", style: TextStyle(fontSize: 15, color: Colors.black, fontWeight: FontWeight.bold),),
+                              Text("Total des passagers", style: TextStyle(fontSize: 15, color: Colors.black, fontWeight: FontWeight.bold),),
                             ],
                           ),
                         ),
@@ -269,7 +276,7 @@ static Future<void> getAllReservation() async {
                                 ],
                               ),
                               SizedBox(height: 10,),
-                              Text("Nombre de réservation effectuées", style: TextStyle(fontSize: 15, color: Colors.black, fontWeight: FontWeight.bold),),
+                              Text("Total des réservations", style: TextStyle(fontSize: 15, color: Colors.black, fontWeight: FontWeight.bold),),
                             ],
                           ),
                         ),
